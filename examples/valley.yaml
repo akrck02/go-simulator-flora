@@ -1,0 +1,40 @@
+# A synthetic mountain, 6 × 4 km and 1800 m high (relieve.json and relieve.f32 next to this file), its climate and
+# 200 years of vegetation from bare ground. Only to show the plugin: nothing here comes from any world.
+plugins:
+  - {name: terrain, command: [go, run, .], directory: ../../go-simulator-terrain}
+  - {name: climate, command: [go, run, .], directory: ../../go-simulator-climate}
+  - {name: flora, command: [go, run, .], directory: ..}
+
+stages:
+  - name: valley
+    clock: {unit: year, from: 0, to: 200, step: 1}
+    snapshots: [50, 100, 200]
+    snapshot_fields: [vegetation, tree_cover]
+    rules:
+      - rule: relief
+        with: {path: relieve.json, origin: [3, 2]}
+      - rule: climate
+        with:
+          relief: relieve.json
+          origin: [3, 2]
+          cell: 0.1
+          temperature: {sea_level: 12, lapse: 6.5}
+          rain: {wind_from: 270, background: 900, orographic: 1500}
+          biomes:
+            - {biome: rock, when: {slope: {min: 0.7}}}
+            - {biome: land}
+      - rule: vegetation
+        name: valley
+        with:
+          background_seeds: 0.002
+          disturbance: {chance: 0.004}
+          softness: {temperature: 1.5, slope: 0.1}
+          publish_every: 50
+          species:
+            - {id: birch, name: Birch, form: tree, height: 18, longevity: 90, maturity: 8, shade_tolerance: 1, dispersal: 400, growth: 0.35, habitat: {temperature: {min: 0, max: 10}, biome: [land]}}
+            - {id: pine, name: Pine, form: tree, height: 25, longevity: 250, maturity: 15, shade_tolerance: 2, dispersal: 150, growth: 0.25, habitat: {temperature: {min: 0, max: 7}, biome: [land]}}
+            - {id: oak, name: Oak, form: tree, height: 25, longevity: 500, maturity: 40, shade_tolerance: 3, dispersal: 60, growth: 0.12, habitat: {temperature: {min: 6}, biome: [land]}}
+            - {id: heather, name: Heather, form: shrub, height: 1, longevity: 40, maturity: 3, shade_tolerance: 2, dispersal: 100, growth: 0.3, habitat: {temperature: {min: -1}}}
+            - {id: meadow, name: Meadow, form: herb, height: 0.4, longevity: 20, maturity: 1, shade_tolerance: 2, dispersal: 300, growth: 0.6, habitat: {temperature: {min: -3}}}
+      - rule: vegetation_indicators
+        with: {vegetation: valley, years: [50, 100, 200]}
