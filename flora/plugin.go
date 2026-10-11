@@ -50,7 +50,9 @@ func vegetationRule(registry landscapes) plugin.Definition {
 				{Name: "background_seeds", Type: "number", Default: 0, Summary: "seeds reaching every cell from far away"},
 				{Name: "publish_every", Type: "number", Default: 10, Summary: "years between publishing the fields"},
 				{Name: "species_fields", Type: "boolean", Default: false, Summary: "also publish cover_<id> for every species"},
-				{Name: "seed", Type: "number", Default: 1},
+				{Name: "managed", Type: "list", Summary: "[{where: condition over the cell's facts, forms: [herb…]}]: land people keep, where only those forms grow"},
+				{Name: "metres_per_unit", Type: "number", Default: defaultMetresPerKm, Summary: "size of a world unit in metres (the scenes are in km)"},
+				{Name: "seed", Type: "number", Default: 1, Summary: "the same seed gives the same landscape"},
 			},
 			Reads: world.Interest{
 				Fields:     []string{world.FieldTemperature, world.FieldPrecipitation, world.FieldElevation, world.FieldSlope, world.FieldBiome},
