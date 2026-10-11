@@ -35,7 +35,7 @@ In every land cell, every species has:
 ## Habitat
 
 A species' habitat is an envelope over the facts of a cell (bioclimatic envelope models, Busby
-1991), written like go-simulator's [conditions](https://github.com/akrck02/go-3d-simulator/blob/feature/simuladores-genericos/docs/vocabulary.md#conditions):
+1991), written like go-simulator's [conditions](https://github.com/akrck02/go-simulator/blob/feature/simuladores-genericos/docs/vocabulary.md#conditions):
 
 ```yaml
 habitat:

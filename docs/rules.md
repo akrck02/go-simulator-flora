@@ -4,7 +4,7 @@ Version 0.1.0, protocol 1. Vegetation that spreads, competes for light, ages and
 
 This reference is generated from what the plugin itself tells the host (the `describe` message), so it always
 matches the code. Parameters go under `with:` in a rules file; see go-simulator's
-[rules file reference](https://github.com/akrck02/go-3d-simulator/blob/feature/simuladores-genericos/docs/rules-files.md).
+[rules file reference](https://github.com/akrck02/go-simulator/blob/feature/simuladores-genericos/docs/rules-files.md).
 
 | Rule | What it does |
 |---|---|
