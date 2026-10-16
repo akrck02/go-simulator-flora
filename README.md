@@ -10,7 +10,7 @@ traits and their habitats come from the scenario.
 
 [![Go](https://img.shields.io/github/go-mod/go-version/akrck02/go-simulator-flora)](go.mod)
 ![Plugin](https://img.shields.io/badge/go--simulator-plugin-informational)
-![Protocol](https://img.shields.io/badge/protocol-1-informational)
+![Protocol](https://img.shields.io/badge/protocol-2-informational)
 ![Clock](https://img.shields.io/badge/clock-yearly-3DDC84)
 
 </div>
