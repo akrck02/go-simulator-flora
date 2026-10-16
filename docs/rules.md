@@ -1,17 +1,17 @@
-# Rules of the flora plugin
+# 📏 Rules of the flora plugin
 
 Version 0.1.0, protocol 1. Vegetation that spreads, competes for light, ages and comes back after disturbances, year by year, where the climate and the relief suit each species (after LANDIS: Mladenoff and He 1999; Scheller et al. 2007).
 
 This reference is generated from what the plugin itself tells the host (the `describe` message), so it always
 matches the code. Parameters go under `with:` in a rules file; see go-simulator's
-[rules file reference](https://github.com/akrck02/go-simulator/blob/feature/simuladores-genericos/docs/rules-files.md).
+[rules file reference](https://github.com/akrck02/go-simulator/blob/main/docs/rules-files.md).
 
 | Rule | What it does |
 |---|---|
 | [`vegetation`](#vegetation) | Sets up the landscape from the world's climate and relief, and advances its vegetation every step. Its instance name names the landscape. |
 | [`vegetation_indicators`](#vegetation_indicators) | Emits a "vegetation_indicators" event in the listed years (every step when none): hectares of every species, of forest, shrubland, grassland and bare ground, and every region's forest share and commonest species. |
 
-## vegetation
+## `vegetation`
 
 Sets up the landscape from the world's climate and relief, and advances its vegetation every step. Its instance name names the landscape.
 
@@ -31,7 +31,7 @@ Sets up the landscape from the world's climate and relief, and advances its vege
 | `metres_per_unit` | number | `1000` | size of a world unit in metres (the scenes are in km) |
 | `seed` | number | `1` | the same seed gives the same landscape |
 
-## vegetation_indicators
+## `vegetation_indicators`
 
 Emits a "vegetation_indicators" event in the listed years (every step when none): hectares of every species, of forest, shrubland, grassland and bare ground, and every region's forest share and commonest species.
 
