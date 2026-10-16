@@ -60,6 +60,20 @@ func vegetationRule(registry landscapes) plugin.Definition {
 				Properties: []string{world.PropertyAnchor},
 			},
 			Writes: []string{world.FieldVegetation, world.FieldTreeCover, world.FieldShrubCover, world.FieldHerbCover},
+			Publishes: []protocol.OutputDescription{
+				plugin.IndexField(world.FieldVegetation, world.EventVegetation, "the commonest species of every cell, −1 for bare ground"),
+				plugin.Field(world.FieldTreeCover, "1", "share of the ground under trees"),
+				plugin.Field(world.FieldShrubCover, "1", "share of the ground under shrubs"),
+				plugin.Field(world.FieldHerbCover, "1", "share of the ground under grasses and flowers"),
+				plugin.Event(world.EventVegetation, "the species behind the values of the vegetation field",
+					plugin.Property("names", "", ""), plugin.Property("labels", "", ""), plugin.Property("forms", "", "tree, shrub or herb"),
+					plugin.Property("heights", "m", "")),
+			},
+			Expects: []protocol.InputDescription{
+				plugin.NeedsField(world.FieldTemperature, "°C"), plugin.ReadsField(world.FieldPrecipitation, "mm"),
+				plugin.ReadsField(world.FieldElevation, "m"), plugin.ReadsField(world.FieldSlope, "m/m"),
+				plugin.ReadsField(world.FieldBiome, "index"), plugin.ReadsEvent(world.EventBiomes),
+			},
 		},
 		New: func(parameters plugin.Parameters) (plugin.Rule, error) {
 			settings, err := settingsFrom(parameters)
@@ -274,6 +288,7 @@ func indicatorsRule(registry landscapes) plugin.Definition {
 				{Name: "vegetation", Type: "text", Summary: "instance name of the vegetation rule"},
 				{Name: "years", Type: "list"},
 			},
+			Publishes: []protocol.OutputDescription{plugin.Event("vegetation_indicators", "hectares of every species and cover, and every region's forest")},
 		},
 		New: func(parameters plugin.Parameters) (plugin.Rule, error) {
 			rule := &indicatorsRuleInstance{registry: registry, landscape: parameters.Text("vegetation", "")}
