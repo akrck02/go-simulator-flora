@@ -14,6 +14,7 @@ jobs:
         with:
           title: "go-simulator-flora"
           description: "The flora plugin of go-simulator: vegetation over the centuries"
+          logo: "./docs/images/logo.svg"
           path: "./docs"
           isObsidianProject: false
           showFooter: true
