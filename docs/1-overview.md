@@ -1,3 +1,5 @@
+<p align="center"><img alt="" src="images/logo.svg" width="120"></p>
+
 # Welcome to go-simulator-flora 👋
 
 **The flora plugin grows a simulated world's plants**, year by year for centuries: grass first, then shrubs, then pioneer trees, and in the end the forest that fits each place.
