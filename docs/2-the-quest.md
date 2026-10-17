@@ -5,8 +5,8 @@ teaches one piece of the flora plugin and ends with the island's vegetation in 3
 
 ![The quest map: a road from START through 5 levels — Sower, Heathkeeper, Pioneer, Patient forester and Storm warden — to a final challenge, Keeper of the old oak](images/quest/quest-map.svg)
 
-We use the mountain island of [the terrain quest](https://github.com/akrck02/go-simulator-terrain/blob/main/docs/quest.md)
-and the weather of [the climate quest](https://github.com/akrck02/go-simulator-climate/blob/main/docs/quest.md).
+We use the mountain island of [the terrain quest](https://github.com/akrck02/go-simulator-terrain/blob/main/docs/2-the-quest.md)
+and the weather of [the climate quest](https://github.com/akrck02/go-simulator-climate/blob/main/docs/2-the-quest.md).
 Grass comes first, then heather, then birches, and over the centuries pine takes the heights and
 oak the wet slopes; storms open gaps; and an old oak the story names stands in its clearing.
 
@@ -129,7 +129,7 @@ func speciesNames(path string) []string {
 }
 ```
 
-`models.yaml`, the trees (go-scene-builder's [models](https://github.com/akrck02/go-scene-builder/blob/master/docs/decoration.md#models)):
+`models.yaml`, the trees (go-scene-builder's [models](https://github.com/akrck02/go-scene-builder/blob/master/docs/6-decoration.md#models)):
 
 ```yaml
 models:
@@ -254,7 +254,7 @@ cliffs.
 
 ![Achievement unlocked: Sower](images/quest/achievement-sower.svg)
 
-Learn more: [Writing a scenario](scenario.md) · [The model](model.md)
+Learn more: [Writing a scenario](4-writing-a-scenario.md) · [The model](5-the-model.md)
 
 ---
 
@@ -364,7 +364,7 @@ It grows under oak and, given centuries, replaces it. Run 400 years to see it.
 
 ![Achievement unlocked: Patient forester](images/quest/achievement-patient-forester.svg)
 
-Learn more: [Choosing traits](scenario.md#choosing-traits)
+Learn more: [Choosing traits](4-writing-a-scenario.md#choosing-traits)
 
 ---
 
@@ -482,4 +482,4 @@ ground and weather were simulated by two other plugins.
 
 ---
 
-[← All the documentation](README.md)
+[← All the documentation](1-overview.md)

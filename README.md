@@ -43,8 +43,8 @@ reviewed it line by line. Treat it as a working draft, not as code I vouch for.
 <th width="50%">Pioneers, then shade-tolerant trees</th>
 </tr>
 <tr>
-<td><a href="docs/model.md#how-a-forest-spreads"><img alt="One planted birch and one planted oak on open ground: the birch's far-flying seeds cover most of the field in sixty years, the oak's acorns spread slowly round it" src="docs/images/spread.svg"></a></td>
-<td><a href="docs/model.md#succession"><img alt="Mean cover of every species over 400 years: meadow first, then birch, then oak takes over and beech slowly follows" src="docs/images/succession-calm.svg"></a></td>
+<td><a href="docs/5-the-model.md#how-a-forest-spreads"><img alt="One planted birch and one planted oak on open ground: the birch's far-flying seeds cover most of the field in sixty years, the oak's acorns spread slowly round it" src="docs/images/spread.svg"></a></td>
+<td><a href="docs/5-the-model.md#succession"><img alt="Mean cover of every species over 400 years: meadow first, then birch, then oak takes over and beech slowly follows" src="docs/images/succession-calm.svg"></a></td>
 </tr>
 <tr>
 <td>Mature plants seed around them, as far as their dispersal; every new plant seeds in its turn.</td>
@@ -55,8 +55,8 @@ reviewed it line by line. Treat it as a working draft, not as code I vouch for.
 <th>Each species where its habitat is</th>
 </tr>
 <tr>
-<td><a href="docs/model.md#disturbance"><img alt="The same field at year 400 with no disturbance, a gap every 200 years and a gap every 50 years in a cell: a closed oak forest, a forest with clearings, and a mosaic of birch and meadow" src="docs/images/disturbance.svg"></a></td>
-<td><a href="docs/model.md#habitat"><img alt="Suitability curves of oak, beech and pine along a strip from 16 °C to 0 °C, and the forest bands that grow there after 250 years" src="docs/images/habitat.svg"></a></td>
+<td><a href="docs/5-the-model.md#disturbance"><img alt="The same field at year 400 with no disturbance, a gap every 200 years and a gap every 50 years in a cell: a closed oak forest, a forest with clearings, and a mosaic of birch and meadow" src="docs/images/disturbance.svg"></a></td>
+<td><a href="docs/5-the-model.md#habitat"><img alt="Suitability curves of oak, beech and pine along a strip from 16 °C to 0 °C, and the forest bands that grow there after 250 years" src="docs/images/habitat.svg"></a></td>
 </tr>
 <tr>
 <td>Windthrow and fire open gaps; frequent ones keep a mosaic, rare ones let the forest close.</td>
@@ -82,7 +82,7 @@ first, then oak in the lowlands and pine on the slopes. A species is a few lines
    dispersal: 60, growth: 0.12, habitat: {temperature: {min: 6}, biome: [land]}}
 ```
 
-[More on getting started →](docs/getting-started.md)
+[More on getting started →](docs/3-getting-started.md)
 
 ## 🔍 How it works
 
@@ -94,15 +94,15 @@ The landscape is a grid over the climate's extent. Every year, in every land cel
 species, seeds arrive, saplings take where there is light, plants fill the room left in their
 layer and die of age, shade or a habitat that does not suit them, and now and then a disturbance
 opens a gap. The plugin never touches the renderer: it answers with fields and events.
-[More on how it works →](docs/how-it-works.md)
+[More on how it works →](docs/6-how-it-works.md)
 
 ## 📚 Documentation
 
 | | |
 |---|---|
-| [The flora quest](docs/quest.md) | Grow an island's plants over 200 years in 5 levels. |
-| [Getting started](docs/getting-started.md) | The folders it needs, running the example, what it writes, the tests. |
-| [The model](docs/model.md) | Cells, habitats, layers and light, one year, spreading, succession, disturbance, anchors, managed land, outputs. |
-| [Writing a scenario](docs/scenario.md) | How to write the species, with an annotated example and advice on traits. |
-| [How it works](docs/how-it-works.md) | How the plugin fits go-simulator, what it reads and writes, and how the pictures were made. |
-| [Rules reference](docs/rules.md) | The `vegetation` and `vegetation_indicators` rules, generated from the plugin's own description. |
+| [The flora quest](docs/2-the-quest.md) | Grow an island's plants over 200 years in 5 levels. |
+| [Getting started](docs/3-getting-started.md) | The folders it needs, running the example, what it writes, the tests. |
+| [The model](docs/5-the-model.md) | Cells, habitats, layers and light, one year, spreading, succession, disturbance, anchors, managed land, outputs. |
+| [Writing a scenario](docs/4-writing-a-scenario.md) | How to write the species, with an annotated example and advice on traits. |
+| [How it works](docs/6-how-it-works.md) | How the plugin fits go-simulator, what it reads and writes, and how the pictures were made. |
+| [Rules reference](docs/7-rules-reference.md) | The `vegetation` and `vegetation_indicators` rules, generated from the plugin's own description. |

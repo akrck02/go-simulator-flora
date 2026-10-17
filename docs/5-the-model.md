@@ -11,11 +11,11 @@ land let it live.
 </p>
 
 It knows nothing about any world: the species, their traits and their habitats come from the
-[scenario](scenario.md). This page explains what happens in each cell, every year.
+[scenario](4-writing-a-scenario.md). This page explains what happens in each cell, every year.
 
 The pictures on this page come from real runs of the plugin, drawn in 2D from the fields it
 published: the example mountain, and small made-up fields that show one thing each
-([how they were made](how-it-works.md#how-the-pictures-were-made)).
+([how they were made](6-how-it-works.md#how-the-pictures-were-made)).
 
 ## The landscape
 
@@ -40,7 +40,7 @@ In every land cell, every species has:
 ## Habitat
 
 A species' habitat is an envelope over the facts of a cell (bioclimatic envelope models, Busby
-1991), written like go-simulator's [conditions](https://github.com/akrck02/go-simulator/blob/main/docs/vocabulary.md#conditions):
+1991), written like go-simulator's [conditions](https://github.com/akrck02/go-simulator/blob/main/docs/5-reference/1-vocabulary-and-conditions.md#conditions):
 
 ```yaml
 habitat:

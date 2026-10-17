@@ -67,8 +67,8 @@ anchors:
   <img alt="A made-up field at year 250: a strip of fields kept as meadow, an oak forest elsewhere, and a round meadow clearing around an anchored old oak" src="images/anchors.svg" width="880">
 </p>
 
-*An anchored old oak with managed land round it, on a made-up field: see [anchors](model.md#anchors)
-and [managed land](model.md#managed-land).*
+*An anchored old oak with managed land round it, on a made-up field: see [anchors](5-the-model.md#anchors)
+and [managed land](5-the-model.md#managed-land).*
 
 ## Choosing traits
 
@@ -87,7 +87,7 @@ The traits follow the species attributes of the LANDIS literature. Some guidance
 - `background_seeds` around 0.001–0.005 lets every species appear wherever it suits, slowly.
 - A disturbance chance of 0.002–0.01 a year gives landscapes from closed forest to a mosaic of
   pioneers and late species.
-- The [succession](model.md#succession) and [disturbance](model.md#disturbance) pictures show
+- The [succession](5-the-model.md#succession) and [disturbance](5-the-model.md#disturbance) pictures show
   what these numbers do on a made-up field.
 - Give real species habitats from their real climate (yearly mean temperature and rain), then
   soften the edges a little so the ranges blend.

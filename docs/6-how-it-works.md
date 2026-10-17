@@ -8,10 +8,10 @@
 
 go-simulator is the host. It keeps the world (its fields, events and entities) and moves the clock.
 The flora plugin is a separate program the host starts (`main.go` serves it over standard input and
-output, go-simulator's [protocol](https://github.com/akrck02/go-simulator/blob/main/docs/protocol.md)).
+output, go-simulator's [protocol](https://github.com/akrck02/go-simulator/blob/main/docs/5-reference/2-protocol.md)).
 
 - At the start the plugin **describes** itself: its two rules, their parameters, what each one
-  reads and what it writes. That description is also where the [rules reference](rules.md) comes from.
+  reads and what it writes. That description is also where the [rules reference](7-rules-reference.md) comes from.
 - `vegetation` reads the `temperature`, `precipitation`, `elevation`, `slope` and `biome` fields,
   the climate's `biomes` event and the anchors, and writes the `vegetation`, `tree_cover`,
   `shrub_cover` and `herb_cover` fields (and `cover_<id>` when asked). Its instance name names the
@@ -20,9 +20,9 @@ output, go-simulator's [protocol](https://github.com/akrck02/go-simulator/blob/m
   `vegetation` rule it names and emits a `vegetation_indicators` event.
 
 A plugin never touches the renderer: it reads its copy of the world and answers with changes
-(go-simulator's [writing plugins](https://github.com/akrck02/go-simulator/blob/main/docs/writing-plugins.md)).
+(go-simulator's [writing plugins](https://github.com/akrck02/go-simulator/blob/main/docs/4-guides/4-writing-plugins.md)).
 Fields use physical units and shapes world units, as go-simulator's
-[vocabulary](https://github.com/akrck02/go-simulator/blob/main/docs/vocabulary.md) lists. The
+[vocabulary](https://github.com/akrck02/go-simulator/blob/main/docs/5-reference/1-vocabulary-and-conditions.md) lists. The
 plugin reads what the terrain and climate plugins publish from the world instead of loading it
 again, so they must come before it in the rules file.
 
@@ -40,7 +40,7 @@ the step covers, one at a time:
 The seeds are spread first, for the whole landscape, with a separable Gaussian kernel (along the
 rows, then along the columns). Then every land cell grows, is disturbed and ages, from the state it
 had at the start of the year, so the cells are shared out over the processors. The fields are
-published again every `publish_every` years. The [model](model.md#one-year) has every formula.
+published again every `publish_every` years. The [model](5-the-model.md#one-year) has every formula.
 
 ## The code
 
@@ -73,5 +73,5 @@ They are SVG drawings with their own light and dark colours, not screenshots: th
 draw fields yet. The maps inside them are the cells of the published fields. The diagrams (how it
 fits, a cell, one year, the light) were drawn by hand in the same style; the cell in the landscape
 diagram is an example, not a measured one. The pictures of the made-up island in
-[the model](model.md#succession) were in the docs before these pages; the scenario they come from
+[the model](5-the-model.md#succession) were in the docs before these pages; the scenario they come from
 is not in the repository.
