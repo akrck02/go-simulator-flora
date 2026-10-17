@@ -12,7 +12,7 @@ output, go-simulator&rsquo;s <a href="https://github.com/akrck02/go-simulator/bl
 
 <ul>
 <li>At the start the plugin <strong>describes</strong> itself: its two rules, their parameters, what each one
-reads and what it writes. That description is also where the <a href="./7-rules-reference">rules reference</a> comes from.</li>
+reads and what it writes. That description is also where the <a href="./rules-reference">rules reference</a> comes from.</li>
 <li><code>vegetation</code> reads the <code>temperature</code>, <code>precipitation</code>, <code>elevation</code>, <code>slope</code> and <code>biome</code> fields,
 the climate&rsquo;s <code>biomes</code> event and the anchors, and writes the <code>vegetation</code>, <code>tree_cover</code>,
 <code>shrub_cover</code> and <code>herb_cover</code> fields (and <code>cover_&lt;id&gt;</code> when asked). Its instance name names the
@@ -42,7 +42,7 @@ the step covers, one at a time:</p>
 <p>The seeds are spread first, for the whole landscape, with a separable Gaussian kernel (along the
 rows, then along the columns). Then every land cell grows, is disturbed and ages, from the state it
 had at the start of the year, so the cells are shared out over the processors. The fields are
-published again every <code>publish_every</code> years. The <a href="./5-the-model">model</a> has every formula.</p>
+published again every <code>publish_every</code> years. The <a href="./the-model">model</a> has every formula.</p>
 
 <h2 id="the-code">The code</h2>
 
@@ -117,5 +117,5 @@ captions. The tests use the same kind of synthetic landscape.</li>
 draw fields yet. The maps inside them are the cells of the published fields. The diagrams (how it
 fits, a cell, one year, the light) were drawn by hand in the same style; the cell in the landscape
 diagram is an example, not a measured one. The pictures of the made-up island in
-<a href="./5-the-model">the model</a> were in the docs before these pages; the scenario they come from
+<a href="./the-model">the model</a> were in the docs before these pages; the scenario they come from
 is not in the repository.</p>
