@@ -2,6 +2,7 @@
 
 | | Page | What is in it |
 |---|---|---|
+| 🏴‍☠️ | [The flora quest](quest.md) | Grow an island's plants over 200 years in 5 levels: grass, heather, pioneers, succession, storms, and an old oak. |
 | 🚀 | [Getting started](getting-started.md) | The folders it needs, running the example, what it writes, the tests. |
 | 🌳 | [The model](model.md) | Cells, habitats, layers and light, one year, how a forest spreads, succession, disturbance, anchors, managed land, outputs, determinism and speed, known limits, with pictures of each. |
 | 📝 | [Writing a scenario](scenario.md) | How to write the species, with an annotated example and advice on traits. |
