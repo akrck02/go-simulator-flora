@@ -1,0 +1,280 @@
+<h1 id="the-flora-model">🌳 The flora model</h1>
+
+<p>Forests do not appear all at once. On bare ground, grasses and gorse arrive first; then trees that
+love the sun, like birch and pine; and, slowly, under their shade, the trees that can wait in the
+dark take over. A storm or a fire opens a clearing and the story starts again there. The flora
+plugin plays that story, year by year, for every species you give it, wherever the climate and the
+land let it live.</p>
+
+<p align="center">
+  <img alt="The example mountain at years 20, 50, 100 and 200: meadow covers the bare ground first, heather takes over, pine holds the summit and oak closes the forest in the lowlands" src="images/hero.svg" width="880">
+</p>
+
+<p>It knows nothing about any world: the species, their traits and their habitats come from the
+<a href="./scenario">scenario</a>. This page explains what happens in each cell, every year.</p>
+
+<p>The pictures on this page come from real runs of the plugin, drawn in 2D from the fields it
+published: the example mountain, and small made-up fields that show one thing each
+(<a href="./how-it-works">how they were made</a>).</p>
+
+<h2 id="the-landscape">The landscape</h2>
+
+<p align="center">
+  <img alt="A grid of cells, one picked out: in every land cell, for every species, its form, its cover, its saplings and the years it has grown there" src="images/model.svg" width="880">
+</p>
+
+<p>The landscape is a grid over the climate&rsquo;s extent, with cells of <code>cell</code> km (default: the
+<code>temperature</code> field&rsquo;s). At the start the plugin samples, at every cell centre, the fields of the
+world: <code>temperature</code> and <code>precipitation</code> (from the climate plugin), <code>elevation</code> and <code>slope</code> (from
+the terrain plugin) bilinearly, and <code>biome</code> by the nearest cell. Land is every cell with a biome
+(or above sea level when there is no biome field). The names of the biomes come from the climate&rsquo;s
+<code>biomes</code> event.</p>
+
+<p>In every land cell, every species has:</p>
+
+<ul>
+<li>its <strong>cover</strong>: the share of the ground its plants take, 0 to 1;</li>
+<li>its <strong>saplings</strong>: the share of the ground with young plants waiting for room (the advance
+regeneration of LANDIS);</li>
+<li>how many <strong>years</strong> it has grown there, which decides when it bears seeds.</li>
+</ul>
+
+<h2 id="habitat">Habitat</h2>
+
+<p>A species&rsquo; habitat is an envelope over the facts of a cell (bioclimatic envelope models, Busby
+1991), written like go-simulator&rsquo;s <a href="https://github.com/akrck02/go-simulator/blob/main/docs/vocabulary.md#conditions" target="_blank">conditions</a>:</p>
+<pre><code class="language-yaml"><span class="nt">habitat</span><span class="p">:</span>
+  <span class="nt">temperature</span><span class="p">:</span> {<span class="nt">min</span><span class="p">:</span> <span class="nt">9, max</span><span class="p">:</span> <span class="m">18</span>}        <span class="c"># °C, the yearly mean</span>
+  <span class="nt">precipitation</span><span class="p">:</span> {<span class="nt">min</span><span class="p">:</span> <span class="m">900</span>}             <span class="c"># mm a year</span>
+  <span class="nt">elevation</span><span class="p">:</span> {<span class="nt">max</span><span class="p">:</span> <span class="m">1500</span>}                <span class="c"># metres</span>
+  <span class="nt">slope</span><span class="p">:</span> {<span class="nt">max</span><span class="p">:</span> <span class="m">0.8</span>}                     <span class="c"># rise over run</span>
+  <span class="nt">biome</span><span class="p">:</span> <span class="p">[</span><span class="l">riverbank]                   </span> <span class="c"># one of the climate&#39;s biomes</span>
+  <span class="nt">distance_to_old_oak</span><span class="p">:</span> {<span class="nt">max</span><span class="p">:</span> <span class="m">60</span>}        <span class="c"># metres from an anchor of the rules file</span>
+</code></pre>
+
+<p>Inside every range the habitat suits the species fully. Past an edge it fades linearly to nothing
+over the fact&rsquo;s <strong>softness</strong> (<code>softness: {temperature: 1.5, precipitation: 150, slope: 0.1,
+distance: 40}</code>, in each fact&rsquo;s unit; without one, the edge is hard). Values that are not ranges
+hold or not. The suitability of a cell is the product of every fact&rsquo;s: 1 where everything suits,
+0 where anything is out of reach. It is worked out once, at the start.</p>
+
+<p align="center">
+  <img alt="Above, the suitability of oak (min 11 °C), beech (6 to 10 °C) and pine (max 5 °C) along a strip from 16 °C to 0 °C, each fading over 1.5 °C past its edge; below, what grows on that strip after 250 years: oak, a band of meadow, beech, another band of meadow, pine" src="images/habitat.svg" width="880">
+</p>
+
+<p><em>A made-up strip from 16 °C in the west to 0 °C in the east. Each tree grows where its range is; a
+plant dies faster where the habitat suits it only in part, so where two ranges meet only at their
+soft edges neither tree closes the forest, and the meadow keeps the gap.</em></p>
+
+<h2 id="layers-and-light">Layers and light</h2>
+
+<p>Light is what plants compete for. Every species has a form: <strong>tree</strong>, <strong>shrub</strong> or <strong>herb</strong>. Trees shade shrubs, shrubs shade herbs.</p>
+
+<ul>
+<li>The light that reaches a layer through the layers above it is <code>1 − 0.9 × min(1, their cover)</code>.</li>
+<li>A species needs light by its <strong>shade tolerance</strong> (1 to 5): <code>need = (5 − tolerance) / 4 × 0.8</code>,
+so tolerance 5 grows in deep shade and tolerance 1 needs 80 % of full light. With some light it
+keeps <code>(light − need) / (1 − need)</code> of its growth, none below what it needs.</li>
+</ul>
+
+<p align="center">
+  <img alt="An example cell: trees covering 0.6 get full light, shrubs below them 0.46 of it, herbs below both 0.10; and a bar chart of the light each shade tolerance needs: 80, 60, 40, 20 and 0 per cent" src="images/light.svg" width="880">
+</p>
+
+<h2 id="one-year">One year</h2>
+
+<p>This is the heart of the model. For every land cell and species, from the state at the start of the year:</p>
+
+<p align="center">
+  <img alt="Six steps in a row: seeds, saplings, recruitment, death, room and disturbance" src="images/one-year.svg" width="880">
+</p>
+
+<ol>
+<li><strong>Seeds.</strong> Mature plants (grown at least <code>maturity</code> years in the cell) spread seeds around them
+with a Gaussian kernel as wide as their <code>dispersal</code> (metres); <code>background_seeds</code> reach every
+cell from far away (birds, storms). Species with <code>spreads: false</code> never seed.</li>
+<li><strong>Saplings.</strong> Seeds become saplings where the habitat suits the species and there is light for
+them, both in the <strong>gaps</strong> of their layer and <strong>under</strong> its plants:
+
+<ul>
+<li>in the gaps, with the light the taller layers leave, less the shade of the plants around the
+gap: tall trees shade a small gap (0.6 when their layer is closed), shrubs less (0.3), grasses
+not at all; the ground a disturbance cleared gets nearly full light;</li>
+<li>under the plants of their own layer, with the light that reaches the ground.</li>
+</ul></li>
+</ol>
+
+<p><code>saplings += growth × seeds × suitability × (light in gaps + light under plants) × (1 − saplings)</code>;
+   then 10 % of the saplings die waiting, more where the habitat does not suit.</p>
+
+<ol>
+<li><strong>Recruitment.</strong> Saplings take the room plants left in their layer:
+<code>recruited = min(saplings, growth × saplings × room × suitability × light from above)</code>.</li>
+<li><strong>Death.</strong> Plants die of age (<code>1 / longevity</code> a year), of a habitat that does not suit them
+(up to 20 % a year) and of shade too deep for them (up to 10 % a year).</li>
+<li><strong>Room.</strong> If the species of a layer together grew past the ground there is, they share it out
+in proportion.</li>
+<li><strong>Disturbance.</strong> With <code>disturbance.chance</code> a year, a cell loses <code>severity</code> of its trees and
+shrubs (windthrow, fire) and they start again; herbs and saplings stay.</li>
+</ol>
+
+<h2 id="how-a-forest-spreads">How a forest spreads</h2>
+
+<p>Seeds only come from mature plants, and they land around them as far as the species&rsquo; <code>dispersal</code>.
+Every plant that grows from them bears seeds in its turn once it is mature, so a species advances
+as a front, faster the farther its seeds fly and the sooner it matures.</p>
+
+<p align="center">
+  <img alt="A flat field with one planted birch on the left and one planted oak on the right, at years 20, 40, 60 and 120: the birch spreads over most of the field in sixty years, the oak only a small round patch in 120" src="images/spread.svg" width="880">
+</p>
+
+<p><em>Birch (dispersal 400 m, seeds from year 8) against oak (60 m, from year 40), from one planted
+tree each, with no seeds from far away. Birch, which needs full light, only fills about a third of
+the ground: it regenerates only where its own cover leaves enough light.</em></p>
+
+<h2 id="succession">Succession</h2>
+
+<p>So pioneers that need full light take open ground first and cannot follow themselves under their
+own shade, while shade-tolerant species waiting below take over as the pioneers age: succession.
+Frequent disturbances keep the pioneers in the landscape; rare ones let the tolerant species close
+the forest. A light-demanding species forms open woodland, because it only regenerates where its
+own cover leaves enough light.</p>
+
+<p align="center">
+  <img alt="Mean cover of every species over 400 years on a flat field without disturbances: meadow peaks near year 25, birch holds about 30 % until year 150, oak rises to 60 % and beech slowly follows; heather stays low" src="images/succession-calm.svg" width="880">
+</p>
+
+<p><em>A made-up field where every species could live everywhere, from bare ground and without
+disturbances: meadow, then birch, then oak; beech, the most shade-tolerant and slowest, is still
+spreading at year 400.</em></p>
+
+<p>The same story on a larger made-up island, with more species:</p>
+
+<p><img src="./images/succession.jpg" alt="The example island at years 30, 80, 140 and 200: shrubs first, then pine on the mountain and oak in the lowlands" /></p>
+
+<p><img src="./images/succession_chart.png" alt="Share of the island under forest, shrubs, grass and bare ground over 200 years" /></p>
+
+<p><em>The example island from bare ground: grassland, then a long time of shrubland, and finally the
+forest closes after about 150 years.</em></p>
+
+<h2 id="disturbance">Disturbance</h2>
+
+<p>Every year each cell has <code>disturbance.chance</code> of losing <code>severity</code> (default 0.8) of its trees and
+shrubs, as after windthrow or a fire. The cleared ground gets nearly full light, so the pioneers
+come back there first.</p>
+
+<p align="center">
+  <img alt="The same field at year 400 with no disturbance, a chance of 0.005 and a chance of 0.02 a year: a closed oak forest; an oak forest with scattered clearings; a mosaic of birch, meadow and a little oak" src="images/disturbance.svg" width="880">
+</p>
+
+<p><em>The field of the succession chart at year 400 with three disturbance chances. With a gap every
+200 years in a cell the oak still holds the forest; with one every 50 years, birch and meadow mark
+most of it.</em></p>
+
+<h2 id="anchors">Anchors</h2>
+
+<p>Anchors of the rules file take part in two ways:</p>
+
+<ul>
+<li><strong>Plants</strong> (<code>role: plant</code>, <code>properties: {species, crown}</code>): a fixed plant, such as an old tree
+the story names. Its species covers the cells within <code>crown</code> metres of it or, when the crown is
+smaller than a cell, the share of the cell under it; the other species of its layer make room.
+It is mature from the start and stays every year.</li>
+<li><strong>Regions</strong> (<code>role: region</code>, an outline): areas the indicators measure.</li>
+</ul>
+
+<p>Any anchor can be used in habitats as <code>distance_to_&lt;anchor id&gt;</code>, in metres, for plants that grow
+near something.</p>
+
+<h2 id="managed-land">Managed land</h2>
+
+<p>Land people keep, such as fields and orchards: where its condition holds (written like a habitat,
+without soft edges), only the listed forms grow.</p>
+<pre><code class="language-yaml"><span class="nt">managed</span><span class="p">:</span>
+  - {<span class="nt">where</span><span class="p">:</span> {<span class="nt">biome</span><span class="p">:</span> <span class="nt">[fields]}, forms</span><span class="p">:</span> <span class="p">[</span><span class="l">herb]}</span>
+  - {<span class="nt">where</span><span class="p">:</span> {<span class="nt">distance_to_old_oak</span><span class="p">:</span> {<span class="nt">max</span><span class="p">:</span> <span class="nt">120}}, forms</span><span class="p">:</span> <span class="p">[</span><span class="l">herb]}  </span> <span class="c"># a clearing round a tree</span>
+</code></pre>
+
+<p align="center">
+  <img alt="A made-up field at year 250: a strip of fields on the left kept as meadow, an oak forest elsewhere, and a round meadow clearing of 120 metres around an anchored old oak" src="images/anchors.svg" width="880">
+</p>
+
+<p><em>The two managed lands above on a made-up field of 2.4 × 1.4 km in cells of 20 m, with an
+anchor that plants an old oak: herbs keep the fields and the clearing, and the forest closes
+everywhere else.</em></p>
+
+<h2 id="what-it-publishes">What it publishes</h2>
+
+<table>
+<thead>
+<tr>
+<th>Output</th>
+<th>When</th>
+<th>Content</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>event <code>vegetation</code></td>
+<td>start</td>
+<td><code>names</code>, <code>labels</code>, <code>forms</code>, <code>heights</code> of the species</td>
+</tr>
+
+<tr>
+<td>field <code>vegetation</code></td>
+<td>start and every <code>publish_every</code> years</td>
+<td>the species that most marks every cell: the commonest tree where tree cover reaches 0.3, else the commonest shrub where shrubs reach 0.3, else the commonest herb where herbs reach 0.2; −1 for bare ground</td>
+</tr>
+
+<tr>
+<td>fields <code>tree_cover</code>, <code>shrub_cover</code>, <code>herb_cover</code></td>
+<td>the same</td>
+<td>share of the ground under each layer</td>
+</tr>
+
+<tr>
+<td>fields <code>cover_&lt;id&gt;</code></td>
+<td>the same, with <code>species_fields: true</code></td>
+<td>cover of every species</td>
+</tr>
+
+<tr>
+<td>event <code>vegetation_indicators</code></td>
+<td>the listed <code>years</code></td>
+<td>hectares of every species; hectares of forest, shrubland, grassland and bare ground; for every region, its forest share and its commonest species</td>
+</tr>
+</tbody>
+</table>
+<p>Put the stage&rsquo;s snapshots at multiples of <code>publish_every</code>, and keep only the fields worth saving
+with <code>snapshot_fields</code>: a large landscape&rsquo;s fields take megabytes each.</p>
+
+<p align="center">
+  <img alt="Two charts of the example mountain over 200 years from its vegetation_indicators events: the share of the land under grassland, shrubland and forest, and the hectares of every species" src="images/valley-over-time.svg" width="880">
+</p>
+
+<h2 id="determinism-and-speed">Determinism and speed</h2>
+
+<p>The same seed gives the same landscape: the chance of a disturbance comes from a hash of the seed,
+the year and the cell, so cells can be worked on in parallel in any order. Cells are spread over
+the processors. A landscape of about 700,000 land cells and 18 species takes about a third of a
+second a year.</p>
+
+<h2 id="known-limits">Known limits</h2>
+
+<ul>
+<li>Plants do not react yet to other plugins&rsquo; entities: a growing city does not clear the forest,
+and abandoned fields do not grow back.</li>
+<li>The viewer does not draw fields yet; go-scene-builder can sow the vegetation from the
+<code>vegetation</code> field as a layer, as it does with biomes.</li>
+<li>Seasons (flowering, leaves) belong to the climate&rsquo;s <code>seasons</code> rule.</li>
+</ul>
+
+<h2 id="tests">Tests</h2>
+<pre><code class="language-bash">go <span class="nb">test</span> ./...
+</code></pre>
+
+<p>The tests grow synthetic landscapes and check what must hold anywhere: every species within its
+habitat, pioneers followed by shade-tolerant trees, disturbances keeping pioneers, anchored plants
+staying (and small crowns covering their share of a cell), managed land keeping forms out, soft
+habitat edges, and the same seed giving the same landscape.</p>

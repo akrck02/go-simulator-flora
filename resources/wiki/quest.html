@@ -1,0 +1,581 @@
+<h1 id="the-flora-quest">The flora quest</h1>
+
+<p>Grow an island&rsquo;s plants from bare ground over two hundred years, one level at a time. Each level
+teaches one piece of the flora plugin and ends with the island&rsquo;s vegetation in 3D.</p>
+
+<p><img src="./images/quest/quest-map.svg" alt="The quest map: a road from START through 5 levels — Sower, Heathkeeper, Pioneer, Patient forester and Storm warden — to a final challenge, Keeper of the old oak" /></p>
+
+<p>We use the mountain island of <a href="https://github.com/akrck02/go-simulator-terrain/blob/main/docs/quest.md" target="_blank">the terrain quest</a>
+and the weather of <a href="https://github.com/akrck02/go-simulator-climate/blob/main/docs/quest.md" target="_blank">the climate quest</a>.
+Grass comes first, then heather, then birches, and over the centuries pine takes the heights and
+oak the wet slopes; storms open gaps; and an old oak the story names stands in its clearing.</p>
+
+<hr>
+
+<p>Every level has the same shape: <strong>the idea</strong> (explained with something from everyday life), <strong>the
+rules</strong>, a <strong>checkpoint</strong> to know it works, and an optional <strong>bonus</strong>.</p>
+
+<hr>
+
+<h2 id="before-you-start">Before you start</h2>
+
+<p>You need Go 1.25 and GEOS (<code>sudo apt install libgeos-dev</code>, <code>brew install geos</code>). Clone the
+projects side by side, and make a folder for the quest:</p>
+<pre><code class="language-sh">git clone https://github.com/akrck02/go-renderer
+git clone https://github.com/akrck02/go-scene-builder
+git clone https://github.com/akrck02/go-simulator
+git clone https://github.com/akrck02/go-simulator-terrain
+git clone https://github.com/akrck02/go-simulator-climate
+git clone https://github.com/akrck02/go-simulator-flora
+mkdir woods <span class="o">&amp;&amp;</span> <span class="nb">cd</span> woods
+go mod init example.com/woods
+</code></pre>
+
+<p>Put the island&rsquo;s relief in it as <code>island.json</code> and <code>island.f32</code> (the terrain quest&rsquo;s end
+snapshot, renamed), and <code>empty.geojson</code>, a map with nothing on it:</p>
+<pre><code class="language-json"><span class="p">{</span><span class="nt">&#34;type&#34;</span><span class="p">:</span> <span class="s2">&#34;FeatureCollection&#34;</span><span class="p">,</span> <span class="nt">&#34;properties&#34;</span><span class="p">:</span> <span class="p">{</span><span class="nt">&#34;units&#34;</span><span class="p">:</span> <span class="s2">&#34;km&#34;</span><span class="p">},</span> <span class="nt">&#34;features&#34;</span><span class="p">:</span> <span class="p">[]}</span>
+</code></pre>
+
+<h3 id="looking-at-the-vegetation">Looking at the vegetation</h3>
+
+<p>The plugin publishes a field <code>vegetation</code>: for every cell, the species that marks it most (or −1,
+bare ground). <code>layer/main.go</code> turns a snapshot of it into a layer go-scene-builder can colour and
+sow trees on:</p>
+<pre><code class="language-go"><span class="c1">// Command layer turns a snapshot of the vegetation field into a layer go-scene-builder colours and</span>
+<span class="c1">// sows: the species&#39; names, from the run&#39;s events, become the layer&#39;s labels, and bare ground</span>
+<span class="c1">// (−1 in the field) becomes a label of its own, &#34;bare&#34;.</span>
+<span class="c1">//</span>
+<span class="c1">//	go run ./layer results &#34;island 200&#34; vegetation.json</span>
+<span class="kn">package</span> <span class="nx">main</span>
+
+<span class="kn">import</span> <span class="p">(</span>
+	<span class="s">&#34;bufio&#34;</span>
+	<span class="s">&#34;encoding/binary&#34;</span>
+	<span class="s">&#34;encoding/json&#34;</span>
+	<span class="s">&#34;log&#34;</span>
+	<span class="s">&#34;os&#34;</span>
+	<span class="s">&#34;path/filepath&#34;</span>
+	<span class="s">&#34;strings&#34;</span>
+<span class="p">)</span>
+
+<span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+	<span class="nx">folder</span><span class="p">,</span> <span class="nx">snapshot</span><span class="p">,</span> <span class="nx">out</span> <span class="o">:=</span> <span class="nx">os</span><span class="p">.</span><span class="nx">Args</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="nx">os</span><span class="p">.</span><span class="nx">Args</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="nx">os</span><span class="p">.</span><span class="nx">Args</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
+	<span class="nx">names</span> <span class="o">:=</span> <span class="nf">speciesNames</span><span class="p">(</span><span class="nx">filepath</span><span class="p">.</span><span class="nf">Join</span><span class="p">(</span><span class="nx">folder</span><span class="p">,</span> <span class="s">&#34;events.jsonl&#34;</span><span class="p">))</span>
+
+	<span class="kd">var</span> <span class="nx">header</span> <span class="kd">map</span><span class="p">[</span><span class="kt">string</span><span class="p">]</span><span class="kt">any</span>
+	<span class="nx">content</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">os</span><span class="p">.</span><span class="nf">ReadFile</span><span class="p">(</span><span class="nx">filepath</span><span class="p">.</span><span class="nf">Join</span><span class="p">(</span><span class="nx">folder</span><span class="p">,</span> <span class="nx">snapshot</span><span class="o">+</span><span class="s">&#34; vegetation.json&#34;</span><span class="p">))</span>
+	<span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+		<span class="nx">log</span><span class="p">.</span><span class="nf">Fatal</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span>
+	<span class="p">}</span>
+	<span class="k">if</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">json</span><span class="p">.</span><span class="nf">Unmarshal</span><span class="p">(</span><span class="nx">content</span><span class="p">,</span> <span class="o">&amp;</span><span class="nx">header</span><span class="p">);</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+		<span class="nx">log</span><span class="p">.</span><span class="nf">Fatal</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span>
+	<span class="p">}</span>
+	<span class="nx">values</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">os</span><span class="p">.</span><span class="nf">ReadFile</span><span class="p">(</span><span class="nx">filepath</span><span class="p">.</span><span class="nf">Join</span><span class="p">(</span><span class="nx">folder</span><span class="p">,</span> <span class="nx">snapshot</span><span class="o">+</span><span class="s">&#34; vegetation.f32&#34;</span><span class="p">))</span>
+	<span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+		<span class="nx">log</span><span class="p">.</span><span class="nf">Fatal</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span>
+	<span class="p">}</span>
+	<span class="nx">cells</span> <span class="o">:=</span> <span class="nb">make</span><span class="p">([]</span><span class="kt">float32</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="nx">values</span><span class="p">)</span><span class="o">/</span><span class="mi">4</span><span class="p">)</span>
+	<span class="k">if</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">binary</span><span class="p">.</span><span class="nf">Read</span><span class="p">(</span><span class="nx">strings</span><span class="p">.</span><span class="nf">NewReader</span><span class="p">(</span><span class="nb">string</span><span class="p">(</span><span class="nx">values</span><span class="p">)),</span> <span class="nx">binary</span><span class="p">.</span><span class="nx">LittleEndian</span><span class="p">,</span> <span class="nx">cells</span><span class="p">);</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+		<span class="nx">log</span><span class="p">.</span><span class="nf">Fatal</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span>
+	<span class="p">}</span>
+	<span class="k">for</span> <span class="nx">index</span><span class="p">,</span> <span class="nx">value</span> <span class="o">:=</span> <span class="k">range</span> <span class="nx">cells</span> <span class="p">{</span>
+		<span class="k">if</span> <span class="nx">value</span> <span class="p">&lt;</span> <span class="mi">0</span> <span class="p">{</span>
+			<span class="nx">cells</span><span class="p">[</span><span class="nx">index</span><span class="p">]</span> <span class="p">=</span> <span class="nb">float32</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="nx">names</span><span class="p">))</span> <span class="c1">// bare ground: the label after the species</span>
+		<span class="p">}</span>
+	<span class="p">}</span>
+	<span class="nx">header</span><span class="p">[</span><span class="s">&#34;labels&#34;</span><span class="p">]</span> <span class="p">=</span> <span class="nb">append</span><span class="p">(</span><span class="nx">names</span><span class="p">,</span> <span class="s">&#34;bare&#34;</span><span class="p">)</span>
+	<span class="nx">written</span><span class="p">,</span> <span class="nx">_</span> <span class="o">:=</span> <span class="nx">json</span><span class="p">.</span><span class="nf">Marshal</span><span class="p">(</span><span class="nx">header</span><span class="p">)</span>
+	<span class="k">if</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">os</span><span class="p">.</span><span class="nf">WriteFile</span><span class="p">(</span><span class="nx">out</span><span class="p">,</span> <span class="nx">written</span><span class="p">,</span> <span class="mi">0</span><span class="nx">o644</span><span class="p">);</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+		<span class="nx">log</span><span class="p">.</span><span class="nf">Fatal</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span>
+	<span class="p">}</span>
+	<span class="nx">file</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">os</span><span class="p">.</span><span class="nf">Create</span><span class="p">(</span><span class="nx">strings</span><span class="p">.</span><span class="nf">TrimSuffix</span><span class="p">(</span><span class="nx">out</span><span class="p">,</span> <span class="s">&#34;.json&#34;</span><span class="p">)</span> <span class="o">+</span> <span class="s">&#34;.f32&#34;</span><span class="p">)</span>
+	<span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+		<span class="nx">log</span><span class="p">.</span><span class="nf">Fatal</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span>
+	<span class="p">}</span>
+	<span class="k">defer</span> <span class="nx">file</span><span class="p">.</span><span class="nf">Close</span><span class="p">()</span>
+	<span class="k">if</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">binary</span><span class="p">.</span><span class="nf">Write</span><span class="p">(</span><span class="nx">file</span><span class="p">,</span> <span class="nx">binary</span><span class="p">.</span><span class="nx">LittleEndian</span><span class="p">,</span> <span class="nx">cells</span><span class="p">);</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+		<span class="nx">log</span><span class="p">.</span><span class="nf">Fatal</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span>
+	<span class="p">}</span>
+<span class="p">}</span>
+
+<span class="c1">// speciesNames reads the names of the species from the vegetation event at the start of the run.</span>
+<span class="kd">func</span> <span class="nf">speciesNames</span><span class="p">(</span><span class="nx">path</span> <span class="kt">string</span><span class="p">)</span> <span class="p">[]</span><span class="kt">string</span> <span class="p">{</span>
+	<span class="nx">file</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">os</span><span class="p">.</span><span class="nf">Open</span><span class="p">(</span><span class="nx">path</span><span class="p">)</span>
+	<span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+		<span class="nx">log</span><span class="p">.</span><span class="nf">Fatal</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span>
+	<span class="p">}</span>
+	<span class="k">defer</span> <span class="nx">file</span><span class="p">.</span><span class="nf">Close</span><span class="p">()</span>
+	<span class="nx">lines</span> <span class="o">:=</span> <span class="nx">bufio</span><span class="p">.</span><span class="nf">NewScanner</span><span class="p">(</span><span class="nx">file</span><span class="p">)</span>
+	<span class="nx">lines</span><span class="p">.</span><span class="nf">Buffer</span><span class="p">(</span><span class="nb">make</span><span class="p">([]</span><span class="kt">byte</span><span class="p">,</span> <span class="mi">1</span><span class="o">&lt;&lt;</span><span class="mi">20</span><span class="p">),</span> <span class="mi">1</span><span class="o">&lt;&lt;</span><span class="mi">24</span><span class="p">)</span>
+	<span class="k">for</span> <span class="nx">lines</span><span class="p">.</span><span class="nf">Scan</span><span class="p">()</span> <span class="p">{</span>
+		<span class="kd">var</span> <span class="nx">event</span> <span class="kd">struct</span> <span class="p">{</span>
+			<span class="nx">Name</span> <span class="kt">string</span> <span class="s">`json:&#34;name&#34;`</span>
+			<span class="nx">Data</span> <span class="kd">struct</span> <span class="p">{</span>
+				<span class="nx">Names</span> <span class="p">[]</span><span class="kt">string</span> <span class="s">`json:&#34;names&#34;`</span>
+			<span class="p">}</span> <span class="s">`json:&#34;data&#34;`</span>
+		<span class="p">}</span>
+		<span class="k">if</span> <span class="nx">json</span><span class="p">.</span><span class="nf">Unmarshal</span><span class="p">(</span><span class="nx">lines</span><span class="p">.</span><span class="nf">Bytes</span><span class="p">(),</span> <span class="o">&amp;</span><span class="nx">event</span><span class="p">)</span> <span class="o">==</span> <span class="kc">nil</span> <span class="o">&amp;&amp;</span> <span class="nx">event</span><span class="p">.</span><span class="nx">Name</span> <span class="o">==</span> <span class="s">&#34;vegetation&#34;</span> <span class="p">{</span>
+			<span class="k">return</span> <span class="nx">event</span><span class="p">.</span><span class="nx">Data</span><span class="p">.</span><span class="nx">Names</span>
+		<span class="p">}</span>
+	<span class="p">}</span>
+	<span class="nx">log</span><span class="p">.</span><span class="nf">Fatal</span><span class="p">(</span><span class="s">&#34;no vegetation event in &#34;</span><span class="p">,</span> <span class="nx">path</span><span class="p">)</span>
+	<span class="k">return</span> <span class="kc">nil</span>
+<span class="p">}</span>
+</code></pre>
+
+<p><code>models.yaml</code>, the trees (go-scene-builder&rsquo;s <a href="https://github.com/akrck02/go-scene-builder/blob/master/docs/decoration.md#models" target="_blank">models</a>):</p>
+<pre><code class="language-yaml"><span class="nt">models</span><span class="p">:</span>
+  <span class="nt">fir</span><span class="p">:</span>
+    <span class="nt">variants</span><span class="p">:</span> <span class="m">3</span>
+    <span class="nt">vary</span><span class="p">:</span> {<span class="nt">color</span><span class="p">:</span> <span class="nt">0.1, scale</span><span class="p">:</span> <span class="p">[</span><span class="m">0.8</span><span class="p">,</span> <span class="m">1.3</span><span class="p">]</span>}
+    <span class="nt">parts</span><span class="p">:</span>
+      - {<span class="nt">shape</span><span class="p">:</span> <span class="nt">cylinder, radius</span><span class="p">:</span> <span class="nt">0.3, height</span><span class="p">:</span> <span class="nt">2, color</span><span class="p">:</span> <span class="s2">&#34;#5a4632&#34;</span>}
+      - {<span class="nt">shape</span><span class="p">:</span> <span class="nt">cone, radius</span><span class="p">:</span> <span class="nt">2.2, height</span><span class="p">:</span> <span class="nt">9, at</span><span class="p">:</span> <span class="nt">[0, 1.5, 0], color</span><span class="p">:</span> <span class="s2">&#34;#2f4a2c&#34;</span><span class="nt">, material</span><span class="p">:</span> {<span class="nt">foliage</span><span class="p">:</span> <span class="nt">true}, move</span><span class="p">:</span> <span class="nt">0.2, grow</span><span class="p">:</span> <span class="m">0.15</span>}
+  <span class="nt">oak</span><span class="p">:</span>
+    <span class="nt">variants</span><span class="p">:</span> <span class="m">3</span>
+    <span class="nt">vary</span><span class="p">:</span> {<span class="nt">color</span><span class="p">:</span> <span class="nt">0.12, warmth</span><span class="p">:</span> <span class="nt">0.06, scale</span><span class="p">:</span> <span class="p">[</span><span class="m">0.8</span><span class="p">,</span> <span class="m">1.25</span><span class="p">]</span>}
+    <span class="nt">parts</span><span class="p">:</span>
+      - {<span class="nt">shape</span><span class="p">:</span> <span class="nt">cylinder, radius</span><span class="p">:</span> <span class="nt">0.35, top_radius</span><span class="p">:</span> <span class="nt">0.25, height</span><span class="p">:</span> <span class="nt">3, color</span><span class="p">:</span> <span class="s2">&#34;#5a4632&#34;</span>}
+      - {<span class="nt">shape</span><span class="p">:</span> <span class="nt">blob, size</span><span class="p">:</span> <span class="nt">[6, 5, 6], at</span><span class="p">:</span> <span class="nt">[0, 5, 0], wobble</span><span class="p">:</span> <span class="nt">0.15, move</span><span class="p">:</span> <span class="nt">0.6, grow</span><span class="p">:</span> <span class="nt">0.2, color</span><span class="p">:</span> <span class="s2">&#34;#56713a&#34;</span><span class="nt">, material</span><span class="p">:</span> {<span class="nt">foliage</span><span class="p">:</span> <span class="kc">true</span>}}
+  <span class="nt">birch</span><span class="p">:</span>
+    <span class="nt">variants</span><span class="p">:</span> <span class="m">3</span>
+    <span class="nt">vary</span><span class="p">:</span> {<span class="nt">color</span><span class="p">:</span> <span class="nt">0.1, scale</span><span class="p">:</span> <span class="p">[</span><span class="m">0.8</span><span class="p">,</span> <span class="m">1.2</span><span class="p">]</span>}
+    <span class="nt">parts</span><span class="p">:</span>
+      - {<span class="nt">shape</span><span class="p">:</span> <span class="nt">cylinder, radius</span><span class="p">:</span> <span class="nt">0.2, height</span><span class="p">:</span> <span class="nt">4, color</span><span class="p">:</span> <span class="s2">&#34;#e8e4dc&#34;</span>}
+      - {<span class="nt">shape</span><span class="p">:</span> <span class="nt">blob, size</span><span class="p">:</span> <span class="nt">[3.5, 6, 3.5], at</span><span class="p">:</span> <span class="nt">[0, 6, 0], wobble</span><span class="p">:</span> <span class="nt">0.2, move</span><span class="p">:</span> <span class="nt">0.4, grow</span><span class="p">:</span> <span class="nt">0.2, color</span><span class="p">:</span> <span class="s2">&#34;#8fae4a&#34;</span><span class="nt">, material</span><span class="p">:</span> {<span class="nt">foliage</span><span class="p">:</span> <span class="kc">true</span>}}
+</code></pre>
+
+<p><code>view.yaml</code>, a colour for every species and trees where trees grow:</p>
+<pre><code class="language-yaml"><span class="nt">units</span><span class="p">:</span> <span class="l">m</span>
+<span class="nt">chunk</span><span class="p">:</span> <span class="m">2</span>
+<span class="nt">models</span><span class="p">:</span> <span class="p">[</span><span class="l">models.yaml]</span>
+<span class="nt">environment</span><span class="p">:</span> {<span class="nt">sun</span><span class="p">:</span> <span class="nt">[250, 25], water_level</span><span class="p">:</span> <span class="m">0</span>}
+<span class="nt">terrain</span><span class="p">:</span>
+  <span class="nt">color</span><span class="p">:</span> <span class="s2">&#34;#8a8674&#34;</span>
+  <span class="nt">biomes</span><span class="p">:</span>
+    <span class="nt">bare</span><span class="p">:</span> {<span class="nt">color</span><span class="p">:</span> <span class="s2">&#34;#8a8674&#34;</span>}
+    <span class="nt">meadow</span><span class="p">:</span> {<span class="nt">color</span><span class="p">:</span> <span class="s2">&#34;#a7b46a&#34;</span>}
+    <span class="nt">heather</span><span class="p">:</span> {<span class="nt">color</span><span class="p">:</span> <span class="s2">&#34;#8c6d86&#34;</span>}
+    <span class="nt">birch</span><span class="p">:</span> {<span class="nt">color</span><span class="p">:</span> <span class="s2">&#34;#8fa35a&#34;</span><span class="nt">, decorate</span><span class="p">:</span> <span class="p">[</span>{<span class="nt">recipe</span><span class="p">:</span> <span class="nt">scatter, density</span><span class="p">:</span> <span class="nt">0.0015, models</span><span class="p">:</span> {<span class="nt">birch</span><span class="p">:</span> <span class="m">1</span>}}<span class="p">]</span>}
+    <span class="nt">pine</span><span class="p">:</span> {<span class="nt">color</span><span class="p">:</span> <span class="s2">&#34;#4f6b3a&#34;</span><span class="nt">, decorate</span><span class="p">:</span> <span class="p">[</span>{<span class="nt">recipe</span><span class="p">:</span> <span class="nt">scatter, density</span><span class="p">:</span> <span class="nt">0.002, models</span><span class="p">:</span> {<span class="nt">fir</span><span class="p">:</span> <span class="m">1</span>}}<span class="p">]</span>}
+    <span class="nt">oak</span><span class="p">:</span> {<span class="nt">color</span><span class="p">:</span> <span class="s2">&#34;#56713a&#34;</span><span class="nt">, decorate</span><span class="p">:</span> <span class="p">[</span>{<span class="nt">recipe</span><span class="p">:</span> <span class="nt">scatter, density</span><span class="p">:</span> <span class="nt">0.0015, models</span><span class="p">:</span> {<span class="nt">oak</span><span class="p">:</span> <span class="m">1</span>}}<span class="p">]</span>}
+    <span class="nt">old_oak</span><span class="p">:</span> {<span class="nt">color</span><span class="p">:</span> <span class="s2">&#34;#2f4a22&#34;</span><span class="nt">, decorate</span><span class="p">:</span> <span class="p">[</span>{<span class="nt">recipe</span><span class="p">:</span> <span class="nt">scatter, density</span><span class="p">:</span> <span class="nt">0.0001, models</span><span class="p">:</span> {<span class="nt">oak</span><span class="p">:</span> <span class="nt">1}, scale</span><span class="p">:</span> <span class="p">[</span><span class="m">3</span><span class="p">,</span> <span class="m">3</span><span class="p">]</span>}<span class="p">]</span>}
+</code></pre>
+
+<p>After every run, for the snapshot of year 200:</p>
+<pre><code class="language-sh">go run ./layer results <span class="s2">&#34;island 200&#34;</span> vegetation.json
+go run ../go-scene-builder/cmd/build-scene -map empty.geojson -relief island.json -layer <span class="nv">biome</span><span class="o">=</span>vegetation.json -style view.yaml -out woods.glb
+go run ../go-renderer/cmd/visor woods.glb
+</code></pre>
+
+<p>The pictures were taken with <code>-zoom 0.75</code>.</p>
+
+<hr>
+
+<h2 id="level-1-the-sower">Level 1 · The Sower</h2>
+
+<table>
+<thead>
+<tr>
+<th>Mission</th>
+<th>Pieces</th>
+<th>Time</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>Grass over the whole island</td>
+<td>three plugins in a row, the <code>vegetation</code> rule, a species</td>
+<td>8 min</td>
+</tr>
+</tbody>
+</table>
+
+<h4 id="the-idea">The idea</h4>
+
+<p>Plants need ground and weather, and other plugins know those. So three plugins work <strong>like a
+relay</strong>: terrain hands the ground to climate, climate hands temperature and rain to flora. They run
+in the order of the stage&rsquo;s rules, and none knows the others: they only read the <strong>world</strong>.</p>
+
+<p>A <strong>species</strong> is a card of traits: what it is (<code>form</code>: tree, shrub or herb), how tall, how long it
+lives, how soon it seeds, how far its seeds fly, and where it can live (<code>habitat</code>).</p>
+
+<h4 id="build-it">Build it</h4>
+
+<p><code>rules.yaml</code>:</p>
+<pre><code class="language-yaml"><span class="nt">plugins</span><span class="p">:</span>
+  - {<span class="nt">name</span><span class="p">:</span> <span class="nt">terrain, command</span><span class="p">:</span> <span class="nt">[go, run, .], directory</span><span class="p">:</span> <span class="l">../go-simulator-terrain}</span>
+  - {<span class="nt">name</span><span class="p">:</span> <span class="nt">climate, command</span><span class="p">:</span> <span class="nt">[go, run, .], directory</span><span class="p">:</span> <span class="l">../go-simulator-climate}</span>
+  - {<span class="nt">name</span><span class="p">:</span> <span class="nt">flora, command</span><span class="p">:</span> <span class="nt">[go, run, .], directory</span><span class="p">:</span> <span class="l">../go-simulator-flora}</span>
+
+<span class="nt">stages</span><span class="p">:</span>
+  - <span class="nt">name</span><span class="p">:</span> <span class="l">island</span>
+    <span class="nt">clock</span><span class="p">:</span> {<span class="nt">unit</span><span class="p">:</span> <span class="nt">year, from</span><span class="p">:</span> <span class="nt">0, to</span><span class="p">:</span> <span class="nt">200, step</span><span class="p">:</span> <span class="m">1</span>}
+    <span class="nt">snapshots</span><span class="p">:</span> <span class="p">[</span><span class="m">20</span><span class="p">,</span> <span class="m">50</span><span class="p">,</span> <span class="m">100</span><span class="p">,</span> <span class="m">200</span><span class="p">]</span>
+    <span class="nt">snapshot_fields</span><span class="p">:</span> <span class="p">[</span><span class="l">vegetation, tree_cover]</span>
+    <span class="nt">rules</span><span class="p">:</span>
+      - <span class="nt">rule</span><span class="p">:</span> <span class="l">relief</span>
+        <span class="nt">with</span><span class="p">:</span> {<span class="nt">path</span><span class="p">:</span> <span class="nt">island.json, origin</span><span class="p">:</span> <span class="p">[</span><span class="m">0</span><span class="p">,</span> <span class="m">0</span><span class="p">]</span>}
+      - <span class="nt">rule</span><span class="p">:</span> <span class="l">climate</span>
+        <span class="nt">with</span><span class="p">:</span>
+          <span class="nt">cell</span><span class="p">:</span> <span class="m">0.1</span>
+          <span class="nt">temperature</span><span class="p">:</span> {<span class="nt">sea_level</span><span class="p">:</span> <span class="nt">12, lapse</span><span class="p">:</span> <span class="m">6.5</span>}
+          <span class="nt">rain</span><span class="p">:</span> {<span class="nt">wind_from</span><span class="p">:</span> <span class="nt">270, background</span><span class="p">:</span> <span class="nt">450, orographic</span><span class="p">:</span> <span class="m">1400</span>}
+          <span class="nt">biomes</span><span class="p">:</span>
+            - {<span class="nt">biome</span><span class="p">:</span> <span class="nt">rock, when</span><span class="p">:</span> {<span class="nt">slope</span><span class="p">:</span> {<span class="nt">min</span><span class="p">:</span> <span class="m">0.6</span>}}}
+            - {<span class="nt">biome</span><span class="p">:</span> <span class="l">land}</span>
+      - <span class="nt">rule</span><span class="p">:</span> <span class="l">vegetation</span>
+        <span class="nt">name</span><span class="p">:</span> <span class="l">island</span>
+        <span class="nt">with</span><span class="p">:</span>
+          <span class="nt">background_seeds</span><span class="p">:</span> <span class="m">0.002</span>
+          <span class="nt">disturbance</span><span class="p">:</span> {<span class="nt">chance</span><span class="p">:</span> <span class="m">0.004</span>}
+          <span class="nt">softness</span><span class="p">:</span> {<span class="nt">temperature</span><span class="p">:</span> <span class="nt">1.5, slope</span><span class="p">:</span> <span class="m">0.1</span>}
+          <span class="nt">publish_every</span><span class="p">:</span> <span class="m">10</span>
+          <span class="nt">species</span><span class="p">:</span>
+            - {<span class="nt">id</span><span class="p">:</span> <span class="nt">meadow, name</span><span class="p">:</span> <span class="nt">Meadow, form</span><span class="p">:</span> <span class="nt">herb, height</span><span class="p">:</span> <span class="nt">0.4, longevity</span><span class="p">:</span> <span class="nt">20, maturity</span><span class="p">:</span> <span class="nt">1, shade_tolerance</span><span class="p">:</span> <span class="nt">2, dispersal</span><span class="p">:</span> <span class="nt">300, growth</span><span class="p">:</span> <span class="nt">0.6, habitat</span><span class="p">:</span> {<span class="nt">temperature</span><span class="p">:</span> {<span class="nt">min</span><span class="p">:</span> -<span class="m">3</span>}}}
+      - <span class="nt">rule</span><span class="p">:</span> <span class="l">vegetation_indicators</span>
+        <span class="nt">with</span><span class="p">:</span> {<span class="nt">vegetation</span><span class="p">:</span> <span class="nt">island, years</span><span class="p">:</span> <span class="p">[</span><span class="m">20</span><span class="p">,</span> <span class="m">50</span><span class="p">,</span> <span class="m">100</span><span class="p">,</span> <span class="m">200</span><span class="p">]</span>}
+</code></pre>
+
+<p><code>background_seeds</code> lets a few seeds reach every cell from far away, so bare ground does not wait
+for its neighbours.</p>
+<pre><code class="language-sh">go run ../go-simulator/cmd/simulate -rules rules.yaml -output results/
+</code></pre>
+
+<h4 id="checkpoint">Checkpoint</h4>
+
+<p>A run of 200 years takes about a second. Look at year 50: green meadow everywhere but the bare
+cliffs.</p>
+
+<p><img src="./images/quest/level-1.jpg" alt="Level 1: meadow over the whole island" /></p>
+
+<p><img src="./images/quest/achievement-sower.svg" alt="Achievement unlocked: Sower" /></p>
+
+<p>Learn more: <a href="./scenario">Writing a scenario</a> · <a href="./model">The model</a></p>
+
+<hr>
+
+<h2 id="level-2-the-heathkeeper">Level 2 · The Heathkeeper</h2>
+
+<table>
+<thead>
+<tr>
+<th>Mission</th>
+<th>Pieces</th>
+<th>Time</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>Heather that crowds the grass out</td>
+<td>a shrub, light and room</td>
+<td>5 min</td>
+</tr>
+</tbody>
+</table>
+
+<h4 id="the-idea-1">The idea</h4>
+
+<p>Plants in a cell share it like <strong>seats on a bus</strong>: there is only so much room, and taller ones
+shade the shorter. A shrub over the grass takes its light, and only grass that bears shade keeps a
+seat. Heather is taller than meadow grass and lives longer.</p>
+
+<h4 id="build-it-1">Build it</h4>
+
+<p>Add to <code>species</code>:</p>
+<pre><code class="language-yaml">            - {<span class="nt">id</span><span class="p">:</span> <span class="nt">heather, name</span><span class="p">:</span> <span class="nt">Heather, form</span><span class="p">:</span> <span class="nt">shrub, height</span><span class="p">:</span> <span class="nt">1, longevity</span><span class="p">:</span> <span class="nt">40, maturity</span><span class="p">:</span> <span class="nt">3, shade_tolerance</span><span class="p">:</span> <span class="nt">2, dispersal</span><span class="p">:</span> <span class="nt">100, growth</span><span class="p">:</span> <span class="nt">0.3, habitat</span><span class="p">:</span> {<span class="nt">temperature</span><span class="p">:</span> {<span class="nt">min</span><span class="p">:</span> -<span class="m">1</span>}}}
+</code></pre>
+
+<h4 id="checkpoint-1">Checkpoint</h4>
+
+<p>By year 50 heather (purple) covers most of the island; meadow keeps a few patches.</p>
+
+<p><img src="./images/quest/level-2.jpg" alt="Level 2: purple heather over most of the island" /></p>
+
+<p><img src="./images/quest/achievement-heathkeeper.svg" alt="Achievement unlocked: Heathkeeper" /></p>
+
+<hr>
+
+<h2 id="level-3-the-pioneer">Level 3 · The Pioneer</h2>
+
+<table>
+<thead>
+<tr>
+<th>Mission</th>
+<th>Pieces</th>
+<th>Time</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>The first trees</td>
+<td>a tree, its habitat, dispersal</td>
+<td>5 min</td>
+</tr>
+</tbody>
+</table>
+
+<h4 id="the-idea-2">The idea</h4>
+
+<p>Birch is a <strong>pioneer</strong>: the first settler of a new town, quick to arrive, quick to build, but not
+staying long. It seeds young and its seeds fly far (400 m), but it needs full light
+(<code>shade_tolerance: 1</code>) and lives only 90 years.</p>
+
+<h4 id="build-it-2">Build it</h4>
+<pre><code class="language-yaml">            - {<span class="nt">id</span><span class="p">:</span> <span class="nt">birch, name</span><span class="p">:</span> <span class="nt">Birch, form</span><span class="p">:</span> <span class="nt">tree, height</span><span class="p">:</span> <span class="nt">18, longevity</span><span class="p">:</span> <span class="nt">90, maturity</span><span class="p">:</span> <span class="nt">8, shade_tolerance</span><span class="p">:</span> <span class="nt">1, dispersal</span><span class="p">:</span> <span class="nt">400, growth</span><span class="p">:</span> <span class="nt">0.35, habitat</span><span class="p">:</span> {<span class="nt">temperature</span><span class="p">:</span> {<span class="nt">min</span><span class="p">:</span> <span class="nt">0, max</span><span class="p">:</span> <span class="nt">10}, biome</span><span class="p">:</span> <span class="p">[</span><span class="l">land]}}</span>
+</code></pre>
+
+<p>Its <code>habitat</code> keeps it between 0 and 10 °C and off the rock biome.</p>
+
+<h4 id="checkpoint-2">Checkpoint</h4>
+
+<p>By year 50, birch wood rises on the cooler upper slopes, its trees standing on the scene.</p>
+
+<p><img src="./images/quest/level-3.jpg" alt="Level 3: a birch wood on the upper slopes, heather round it" /></p>
+
+<p><img src="./images/quest/achievement-pioneer.svg" alt="Achievement unlocked: Pioneer" /></p>
+
+<hr>
+
+<h2 id="level-4-the-patient-forester">Level 4 · The Patient forester</h2>
+
+<table>
+<thead>
+<tr>
+<th>Mission</th>
+<th>Pieces</th>
+<th>Time</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>Succession: who comes after the pioneers</td>
+<td>shade tolerance, longevity, maturity</td>
+<td>8 min</td>
+</tr>
+</tbody>
+</table>
+
+<h4 id="the-idea-3">The idea</h4>
+
+<p>Forests change hands like <strong>shifts at a lighthouse</strong>: the pioneers hold it first, but the
+patient ones take over. Pine bears more shade than birch and lives 250 years; oak bears more still,
+lives 500, but takes 40 years to seed and its acorns fall close (60 m). Slow to arrive, it wins in
+the end where it is warm and wet enough. This is <strong>succession</strong>.</p>
+
+<h4 id="build-it-3">Build it</h4>
+<pre><code class="language-yaml">            - {<span class="nt">id</span><span class="p">:</span> <span class="nt">pine, name</span><span class="p">:</span> <span class="nt">Pine, form</span><span class="p">:</span> <span class="nt">tree, height</span><span class="p">:</span> <span class="nt">25, longevity</span><span class="p">:</span> <span class="nt">250, maturity</span><span class="p">:</span> <span class="nt">15, shade_tolerance</span><span class="p">:</span> <span class="nt">2, dispersal</span><span class="p">:</span> <span class="nt">150, growth</span><span class="p">:</span> <span class="nt">0.25, habitat</span><span class="p">:</span> {<span class="nt">temperature</span><span class="p">:</span> {<span class="nt">min</span><span class="p">:</span> <span class="nt">0, max</span><span class="p">:</span> <span class="nt">7}, biome</span><span class="p">:</span> <span class="p">[</span><span class="l">land]}}</span>
+            - {<span class="nt">id</span><span class="p">:</span> <span class="nt">oak, name</span><span class="p">:</span> <span class="nt">Oak, form</span><span class="p">:</span> <span class="nt">tree, height</span><span class="p">:</span> <span class="nt">25, longevity</span><span class="p">:</span> <span class="nt">500, maturity</span><span class="p">:</span> <span class="nt">40, shade_tolerance</span><span class="p">:</span> <span class="nt">3, dispersal</span><span class="p">:</span> <span class="nt">60, growth</span><span class="p">:</span> <span class="nt">0.12, habitat</span><span class="p">:</span> {<span class="nt">temperature</span><span class="p">:</span> {<span class="nt">min</span><span class="p">:</span> <span class="nt">6}, precipitation</span><span class="p">:</span> {<span class="nt">min</span><span class="p">:</span> <span class="nt">1200}, biome</span><span class="p">:</span> <span class="p">[</span><span class="l">land]}}</span>
+</code></pre>
+
+<p>Look at years 50, 100 and 200.</p>
+
+<h4 id="checkpoint-3">Checkpoint</h4>
+
+<p>Year 50: birch and heather. Year 100: pine darkens the summit. Year 200: oak closes the forest on
+the wet slopes, and heather holds only the dry edges.</p>
+
+<p><img src="./images/quest/level-4-50.jpg" alt="Level 4 at year 50: birch and heather" /></p>
+
+<p><img src="./images/quest/level-4-100.jpg" alt="Level 4 at year 100: pine on the summit" /></p>
+
+<p><img src="./images/quest/level-4-200.jpg" alt="Level 4 at year 200: oak forest over the slopes" /></p>
+
+<h4 id="bonus-optional-a-beech-that-waits-in-the-shade">Bonus (optional): a beech that waits in the shade</h4>
+
+<details>
+<summary>🔓 Show the solution</summary>
+
+<pre><code>            - {id: beech, name: Beech, form: tree, height: 30, longevity: 300, maturity: 50, shade_tolerance: 5, dispersal: 40, growth: 0.08, habitat: {temperature: {min: 6}, precipitation: {min: 1400}, biome: [land]}}</code></pre>
+
+It grows under oak and, given centuries, replaces it. Run 400 years to see it.
+
+</details>
+
+<p><img src="./images/quest/achievement-patient-forester.svg" alt="Achievement unlocked: Patient forester" /></p>
+
+<p>Learn more: <a href="./scenario">Choosing traits</a></p>
+
+<hr>
+
+<h2 id="level-5-the-storm-warden">Level 5 · The Storm warden</h2>
+
+<table>
+<thead>
+<tr>
+<th>Mission</th>
+<th>Pieces</th>
+<th>Time</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>Gaps where trees fall, and the forest in numbers</td>
+<td><code>disturbance</code>, <code>vegetation_indicators</code></td>
+<td>6 min</td>
+</tr>
+</tbody>
+</table>
+
+<h4 id="the-idea-4">The idea</h4>
+
+<p>A <strong>storm</strong> knocks trees down, and in the gap the pioneers start again: a forest is never one age.
+<code>disturbance.chance</code> is the chance a year that a cell is hit; <code>severity</code> the share of trees and
+shrubs it takes.</p>
+
+<p>To know how much forest there is, the <strong>indicators</strong> rule counts hectares at the years you ask, as
+an event.</p>
+
+<h4 id="build-it-4">Build it</h4>
+<pre><code class="language-yaml">          <span class="nt">disturbance</span><span class="p">:</span> {<span class="nt">chance</span><span class="p">:</span> <span class="nt">0.03, severity</span><span class="p">:</span> <span class="m">0.9</span>}
+</code></pre>
+
+<h4 id="checkpoint-4">Checkpoint</h4>
+
+<p>Year 200 is patchy: oak and pine broken by heather and birch where storms opened gaps. In
+<code>results/events.jsonl</code>, the <code>vegetation_indicators</code> event of year 200 counts the hectares of every
+species and of forest, shrubland, grassland and bare ground.</p>
+
+<p><img src="./images/quest/level-5.jpg" alt="Level 5: a forest broken into patches by storms" /></p>
+
+<h4 id="bonus-optional-check-it">Bonus (optional): check it</h4>
+
+<p>An objective that fails if the storms leave less than 400 hectares of forest at year 200 (without storms, level 4 had about 1,400; with them, about 460).</p>
+
+<details>
+<summary>🔓 Show the solution</summary>
+
+<pre><code>    objectives:
+      - {name: a forested island, at: 200, event: vegetation_indicators, value: forest_hectares, min: 400}</code></pre>
+
+</details>
+
+<p><img src="./images/quest/achievement-storm-warden.svg" alt="Achievement unlocked: Storm warden" /></p>
+
+<hr>
+
+<h2 id="final-challenge-keeper-of-the-old-oak">Final challenge · Keeper of the old oak</h2>
+
+<p>The story says an <strong>old oak</strong> stands in the north-west of the island, in a <strong>clearing</strong> people keep
+open round it; and the low ground by the shore is <strong>fields</strong>, kept as grass.</p>
+
+<blockquote>
+<p><strong>Hint:</strong> an anchor with <code>role: plant</code> plants a fixed tree of a species that does not spread
+(<code>spreads: false</code>). <code>managed</code> land keeps only some forms where its condition holds, and an
+anchor can be named in a condition as <code>distance_to_&lt;id&gt;</code>.</p>
+</blockquote>
+
+<p>Try it on your own first, then compare with the solution.</p>
+
+<p><img src="./images/quest/final.jpg" alt="The final challenge: the island at year 200, with meadow kept on the low ground" /></p>
+
+<p><img src="./images/quest/final-close.jpg" alt="Close up: the old oak in its clearing on the north-west slope" /></p>
+
+<details>
+<summary>🔓 Show the solution</summary>
+
+At the top of the rules file:
+
+<pre><code>anchors:
+  - {id: old_oak, role: plant, at: [-1.5, -1.2], properties: {species: old_oak, crown: 150}}</code></pre>
+
+In the vegetation rule:
+
+<pre><code>          managed:
+            - {where: {elevation: {max: 120}}, forms: [herb]}
+            - {where: {distance_to_old_oak: {max: 400}}, forms: [herb]}</code></pre>
+
+and a species:
+
+<pre><code>            - {id: old_oak, name: The old oak, form: tree, height: 20, longevity: 2000, maturity: 50, shade_tolerance: 3, dispersal: 0, growth: 0.1, spreads: false, habitat: {}}</code></pre>
+
+In `view.yaml`, a colour and one big oak for it:
+`old_oak: {color: "#2f4a22", decorate: [{recipe: scatter, density: 0.0001, models: {oak: 1}, scale: [3, 3]}]}`.
+The indicators count `hectares_old_oak` and about 300 hectares of meadow kept by people.
+
+</details>
+
+<p><img src="./images/quest/achievement-final.svg" alt="Rare achievement unlocked: Keeper of the old oak" /></p>
+
+<hr>
+
+<h2 id="well-done">Well done</h2>
+
+<p><img src="./images/quest/achievements-all.svg" alt="All six achievements: Sower, Heathkeeper, Pioneer, Patient forester, Storm warden and Keeper of the old oak" /></p>
+
+<p>You grew two centuries of vegetation from the laws of light, room and seed, on an island whose
+ground and weather were simulated by two other plugins.</p>
+
+<h3 id="ideas-to-keep-going">Ideas to keep going</h3>
+
+<table>
+<thead>
+<tr>
+<th>Idea</th>
+<th>Difficulty</th>
+<th>Hint</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>A field per species</td>
+<td>⭐</td>
+<td><code>species_fields: true</code> publishes <code>cover_&lt;id&gt;</code></td>
+</tr>
+
+<tr>
+<td>A region measured on its own</td>
+<td>⭐⭐</td>
+<td>An anchor with <code>role: region</code> and an outline: the indicators report it</td>
+</tr>
+
+<tr>
+<td>A town in the clearing</td>
+<td>⭐⭐⭐</td>
+<td><a href="https://github.com/akrck02/go-simulator-urban" target="_blank">The urban plugin</a></td>
+</tr>
+</tbody>
+</table>
+
+<h2 id="troubleshooting">Troubleshooting</h2>
+
+<table>
+<thead>
+<tr>
+<th>You see</th>
+<th>Why, and what to do</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td><code>no vegetation event</code> from <code>layer</code></td>
+<td>The run did not reach the flora plugin: look at the errors <code>simulate</code> printed</td>
+</tr>
+
+<tr>
+<td>Everything is bare</td>
+<td>No species&rsquo; habitat fits the island: snapshot <code>temperature</code> from the climate and compare</td>
+</tr>
+
+<tr>
+<td>The trees are dots</td>
+<td>You are far away: <code>-zoom 0.15</code> and <code>-look-at x,z</code> in the viewer</td>
+</tr>
+
+<tr>
+<td><code>unknown species</code> for an anchor</td>
+<td>The anchor&rsquo;s <code>species</code> must be the <code>id</code> of a species in the list</td>
+</tr>
+</tbody>
+</table>
+
+<hr>
+
+<p><a href="./readme">← All the documentation</a></p>

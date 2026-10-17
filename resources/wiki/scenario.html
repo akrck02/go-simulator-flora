@@ -1,0 +1,151 @@
+<h1 id="writing-a-scenario">📝 Writing a scenario</h1>
+
+<p>The scenario is the <code>with:</code> of the <code>vegetation</code> rule, or a file it includes
+(<code>with: {include: vegetation.yaml}</code>). It names the species and the landscape&rsquo;s settings.</p>
+<pre><code class="language-yaml"><span class="nt">cell</span><span class="p">:</span> <span class="m">0.1</span>                        <span class="c"># km between cell centres (default: the temperature field&#39;s)</span>
+<span class="nt">seed</span><span class="p">:</span> <span class="m">4</span>
+<span class="nt">background_seeds</span><span class="p">:</span> <span class="m">0.002</span>          <span class="c"># seeds reaching every cell from far away</span>
+<span class="nt">disturbance</span><span class="p">:</span> {<span class="nt">chance</span><span class="p">:</span> <span class="nt">0.004, severity</span><span class="p">:</span> <span class="m">0.8</span>}   <span class="c"># a gap every 250 years in each cell, on average</span>
+<span class="nt">softness</span><span class="p">:</span> {<span class="nt">temperature</span><span class="p">:</span> <span class="nt">1.5, precipitation</span><span class="p">:</span> <span class="nt">150, slope</span><span class="p">:</span> <span class="nt">0.1, distance</span><span class="p">:</span> <span class="m">40</span>}
+<span class="nt">publish_every</span><span class="p">:</span> <span class="m">10</span>                <span class="c"># years between publishing the fields</span>
+<span class="nt">managed</span><span class="p">:</span>
+  - {<span class="nt">where</span><span class="p">:</span> {<span class="nt">biome</span><span class="p">:</span> <span class="nt">[fields]}, forms</span><span class="p">:</span> <span class="p">[</span><span class="l">herb]}</span>
+<span class="nt">species</span><span class="p">:</span>
+  - <span class="nt">id</span><span class="p">:</span> <span class="l">birch                   </span> <span class="c"># names fields and indicators: no spaces or slashes</span>
+    <span class="nt">name</span><span class="p">:</span> <span class="l">Downy birch (Betula pubescens)</span>
+    <span class="nt">form</span><span class="p">:</span> <span class="l">tree                  </span> <span class="c"># tree, shrub or herb</span>
+    <span class="nt">height</span><span class="p">:</span> <span class="m">18</span>                   <span class="c"># metres, for the scene</span>
+    <span class="nt">longevity</span><span class="p">:</span> <span class="m">90</span>                <span class="c"># years a plant lives</span>
+    <span class="nt">maturity</span><span class="p">:</span> <span class="m">8</span>                  <span class="c"># years before it bears seeds</span>
+    <span class="nt">shade_tolerance</span><span class="p">:</span> <span class="m">1</span>           <span class="c"># 1: needs full light … 5: grows in deep shade</span>
+    <span class="nt">dispersal</span><span class="p">:</span> <span class="m">400</span>               <span class="c"># metres its seeds usually travel</span>
+    <span class="nt">growth</span><span class="p">:</span> <span class="m">0.35</span>                 <span class="c"># share of the free room it fills in a year</span>
+    <span class="nt">habitat</span><span class="p">:</span> {<span class="nt">temperature</span><span class="p">:</span> {<span class="nt">min</span><span class="p">:</span> <span class="nt">2, max</span><span class="p">:</span> <span class="nt">11}, slope</span><span class="p">:</span> {<span class="nt">max</span><span class="p">:</span> <span class="m">0.6</span>}}
+  - <span class="nt">id</span><span class="p">:</span> <span class="l">beech</span>
+    <span class="nt">name</span><span class="p">:</span> <span class="l">Beech (Fagus sylvatica)</span>
+    <span class="nt">form</span><span class="p">:</span> <span class="l">tree</span>
+    <span class="nt">height</span><span class="p">:</span> <span class="m">30</span>
+    <span class="nt">longevity</span><span class="p">:</span> <span class="m">300</span>
+    <span class="nt">maturity</span><span class="p">:</span> <span class="m">50</span>
+    <span class="nt">shade_tolerance</span><span class="p">:</span> <span class="m">5</span>
+    <span class="nt">dispersal</span><span class="p">:</span> <span class="m">40</span>
+    <span class="nt">growth</span><span class="p">:</span> <span class="m">0.08</span>
+    <span class="nt">habitat</span><span class="p">:</span> {<span class="nt">temperature</span><span class="p">:</span> {<span class="nt">min</span><span class="p">:</span> <span class="nt">6, max</span><span class="p">:</span> <span class="nt">11}, precipitation</span><span class="p">:</span> {<span class="nt">min</span><span class="p">:</span> <span class="nt">1200}, slope</span><span class="p">:</span> {<span class="nt">max</span><span class="p">:</span> <span class="m">0.6</span>}}
+  - <span class="nt">id</span><span class="p">:</span> <span class="l">meadow</span>
+    <span class="nt">name</span><span class="p">:</span> <span class="l">Meadow grasses</span>
+    <span class="nt">form</span><span class="p">:</span> <span class="l">herb</span>
+    <span class="nt">height</span><span class="p">:</span> <span class="m">0.5</span>
+    <span class="nt">longevity</span><span class="p">:</span> <span class="m">20</span>                <span class="c"># perennial grasses live for decades as clumps</span>
+    <span class="nt">maturity</span><span class="p">:</span> <span class="m">1</span>
+    <span class="nt">shade_tolerance</span><span class="p">:</span> <span class="m">2</span>
+    <span class="nt">dispersal</span><span class="p">:</span> <span class="m">300</span>
+    <span class="nt">growth</span><span class="p">:</span> <span class="m">0.6</span>
+    <span class="nt">habitat</span><span class="p">:</span> {<span class="nt">temperature</span><span class="p">:</span> {<span class="nt">min</span><span class="p">:</span> <span class="m">0</span>}}
+  - <span class="nt">id</span><span class="p">:</span> <span class="l">old_oak</span>
+    <span class="nt">name</span><span class="p">:</span> <span class="l">The old oak</span>
+    <span class="nt">form</span><span class="p">:</span> <span class="l">tree</span>
+    <span class="nt">height</span><span class="p">:</span> <span class="m">20</span>
+    <span class="nt">longevity</span><span class="p">:</span> <span class="m">2000</span>
+    <span class="nt">maturity</span><span class="p">:</span> <span class="m">50</span>
+    <span class="nt">shade_tolerance</span><span class="p">:</span> <span class="m">3</span>
+    <span class="nt">dispersal</span><span class="p">:</span> <span class="m">0</span>
+    <span class="nt">growth</span><span class="p">:</span> <span class="m">0.1</span>
+    <span class="nt">spreads</span><span class="p">:</span> <span class="kc">false</span>               <span class="c"># only where an anchor plants it</span>
+    <span class="nt">habitat</span><span class="p">:</span> {}
+</code></pre>
+
+<p>And in the rules file, the anchor that plants the old oak:</p>
+<pre><code class="language-yaml"><span class="nt">anchors</span><span class="p">:</span>
+  - {<span class="nt">id</span><span class="p">:</span> <span class="nt">old_oak, role</span><span class="p">:</span> <span class="nt">plant, at</span><span class="p">:</span> <span class="nt">[1.05, 0.55], properties</span><span class="p">:</span> {<span class="nt">species</span><span class="p">:</span> <span class="nt">old_oak, crown</span><span class="p">:</span> <span class="m">20</span>}}
+</code></pre>
+
+<p align="center">
+  <img alt="A made-up field at year 250: a strip of fields kept as meadow, an oak forest elsewhere, and a round meadow clearing around an anchored old oak" src="images/anchors.svg" width="880">
+</p>
+
+<p><em>An anchored old oak with managed land round it, on a made-up field: see <a href="./model">anchors</a>
+and <a href="./model">managed land</a>.</em></p>
+
+<h2 id="choosing-traits">Choosing traits</h2>
+
+<p>The traits follow the species attributes of the LANDIS literature. Some guidance:</p>
+
+<table>
+<thead>
+<tr>
+<th>Kind of species</th>
+<th>Shade tolerance</th>
+<th>Longevity</th>
+<th>Maturity</th>
+<th>Dispersal</th>
+<th>Growth</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>Pioneer tree (birch, aspen)</td>
+<td>1</td>
+<td>60–120</td>
+<td>5–10</td>
+<td>200–500 m</td>
+<td>0.3–0.4</td>
+</tr>
+
+<tr>
+<td>Light-demanding conifer (pine)</td>
+<td>2</td>
+<td>150–300</td>
+<td>10–20</td>
+<td>100–200 m</td>
+<td>0.2–0.3</td>
+</tr>
+
+<tr>
+<td>Mid-tolerant broadleaf (oak)</td>
+<td>3</td>
+<td>300–600</td>
+<td>25–50</td>
+<td>30–100 m (acorns)</td>
+<td>0.1–0.15</td>
+</tr>
+
+<tr>
+<td>Shade-tolerant (beech, fir)</td>
+<td>5</td>
+<td>250–450</td>
+<td>30–60</td>
+<td>30–60 m</td>
+<td>0.05–0.1</td>
+</tr>
+
+<tr>
+<td>Shrub (heather, gorse)</td>
+<td>1–3</td>
+<td>20–80</td>
+<td>3–5</td>
+<td>50–150 m</td>
+<td>0.25–0.4</td>
+</tr>
+
+<tr>
+<td>Grass or herb</td>
+<td>1–2</td>
+<td>10–30</td>
+<td>1–2</td>
+<td>100–300 m</td>
+<td>0.4–0.6</td>
+</tr>
+</tbody>
+</table>
+
+<ul>
+<li>A forest closes in 150–250 years from bare ground; shade-tolerant trees need longer.</li>
+<li><code>background_seeds</code> around 0.001–0.005 lets every species appear wherever it suits, slowly.</li>
+<li>A disturbance chance of 0.002–0.01 a year gives landscapes from closed forest to a mosaic of
+pioneers and late species.</li>
+<li>The <a href="./model">succession</a> and <a href="./model">disturbance</a> pictures show
+what these numbers do on a made-up field.</li>
+<li>Give real species habitats from their real climate (yearly mean temperature and rain), then
+soften the edges a little so the ranges blend.</li>
+</ul>

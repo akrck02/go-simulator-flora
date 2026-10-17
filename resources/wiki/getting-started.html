@@ -1,0 +1,111 @@
+<h1 id="getting-started">🚀 Getting started</h1>
+
+<h2 id="the-folders-it-needs">The folders it needs</h2>
+
+<p>The plugin is developed next to the projects it uses: <code>go.mod</code> replaces go-simulator, go-renderer
+and go-scene-builder with the folders beside this one, and the example starts the terrain and
+climate plugins from theirs. Clone them side by side:</p>
+<pre><code>go-renderer/
+go-scene-builder/
+go-simulator/
+go-simulator-climate/
+go-simulator-terrain/
+go-simulator-flora/   ← this repository
+</code></pre>
+
+<h2 id="running-the-example">Running the example</h2>
+<pre><code class="language-bash"><span class="nb">cd</span> ../go-simulator
+go run ./cmd/simulate -rules ../go-simulator-flora/examples/valley.yaml -output results/
+</code></pre>
+
+<p><code>examples/valley.yaml</code> grows the vegetation of a synthetic mountain, 6 × 4 km and 1800 m high
+(<code>relieve.json</code> and <code>relieve.f32</code> next to it), from bare ground over 200 years: heather first, then
+oak in the lowlands and pine on the slopes. Nothing in it comes from any world.</p>
+
+<p align="center">
+  <img alt="The example mountain at years 20, 50, 100 and 200: meadow, then heather, then oak forest in the lowlands and pine on the summit" src="images/hero.svg" width="880">
+</p>
+
+<p>The rules file starts three plugins with <code>go run</code>, so nothing needs installing:</p>
+<pre><code class="language-yaml"><span class="nt">plugins</span><span class="p">:</span>
+  - {<span class="nt">name</span><span class="p">:</span> <span class="nt">terrain, command</span><span class="p">:</span> <span class="nt">[go, run, .], directory</span><span class="p">:</span> <span class="l">../../go-simulator-terrain}</span>
+  - {<span class="nt">name</span><span class="p">:</span> <span class="nt">climate, command</span><span class="p">:</span> <span class="nt">[go, run, .], directory</span><span class="p">:</span> <span class="l">../../go-simulator-climate}</span>
+  - {<span class="nt">name</span><span class="p">:</span> <span class="nt">flora, command</span><span class="p">:</span> <span class="nt">[go, run, .], directory</span><span class="p">:</span> <span class="l">..}</span>
+</code></pre>
+
+<p>and one stage on a yearly clock, where the relief and the climate come before the vegetation that
+reads them:</p>
+<pre><code class="language-yaml"><span class="nt">stages</span><span class="p">:</span>
+  - <span class="nt">name</span><span class="p">:</span> <span class="l">valley</span>
+    <span class="nt">clock</span><span class="p">:</span> {<span class="nt">unit</span><span class="p">:</span> <span class="nt">year, from</span><span class="p">:</span> <span class="nt">0, to</span><span class="p">:</span> <span class="nt">200, step</span><span class="p">:</span> <span class="m">1</span>}
+    <span class="nt">snapshots</span><span class="p">:</span> <span class="p">[</span><span class="m">50</span><span class="p">,</span> <span class="m">100</span><span class="p">,</span> <span class="m">200</span><span class="p">]</span>
+    <span class="nt">snapshot_fields</span><span class="p">:</span> <span class="p">[</span><span class="l">vegetation, tree_cover]</span>
+    <span class="nt">rules</span><span class="p">:</span>
+      - <span class="nt">rule</span><span class="p">:</span> <span class="l">relief       </span> <span class="c"># terrain: elevation and slope</span>
+      - <span class="nt">rule</span><span class="p">:</span> <span class="l">climate      </span> <span class="c"># climate: temperature, precipitation and the biomes</span>
+      - <span class="nt">rule</span><span class="p">:</span> <span class="l">vegetation   </span> <span class="c"># this plugin: the species and the landscape&#39;s settings</span>
+        <span class="nt">name</span><span class="p">:</span> <span class="l">valley</span>
+      - <span class="nt">rule</span><span class="p">:</span> <span class="l">vegetation_indicators</span>
+        <span class="nt">with</span><span class="p">:</span> {<span class="nt">vegetation</span><span class="p">:</span> <span class="nt">valley, years</span><span class="p">:</span> <span class="p">[</span><span class="m">50</span><span class="p">,</span> <span class="m">100</span><span class="p">,</span> <span class="m">200</span><span class="p">]</span>}
+</code></pre>
+
+<p>The whole species list and every setting are in <a href="./scenario">writing a scenario</a>; the rules
+file&rsquo;s own keys are in go-simulator&rsquo;s
+<a href="https://github.com/akrck02/go-simulator/blob/main/docs/rules-files.md" target="_blank">rules file reference</a>.</p>
+
+<h2 id="what-it-writes">What it writes</h2>
+
+<p><code>cmd/simulate</code> runs the stage to its end and saves, in the output folder:</p>
+
+<table>
+<thead>
+<tr>
+<th>File</th>
+<th>What is in it</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td><code>valley 50 vegetation.f32</code> and <code>.json</code></td>
+<td>the <code>vegetation</code> field at year 50: which species marks every cell (−1 for bare ground), with its grid in the <code>.json</code></td>
+</tr>
+
+<tr>
+<td><code>valley 50 tree_cover.f32</code> and <code>.json</code></td>
+<td>the share of the ground under trees in every cell</td>
+</tr>
+
+<tr>
+<td><code>valley 50.geojson</code></td>
+<td>the entities at year 50 (none here)</td>
+</tr>
+
+<tr>
+<td><code>events.jsonl</code></td>
+<td>every event: the climate&rsquo;s <code>biomes</code>, this plugin&rsquo;s <code>vegetation</code> (the names, labels, forms and heights of the species) and <code>vegetation_indicators</code> in the listed years</td>
+</tr>
+</tbody>
+</table>
+<p>The same for years 100 and 200. An indicators event looks like this (year 200 of the example):</p>
+<pre><code class="language-json"><span class="p">{</span><span class="nt">&#34;forest_hectares&#34;</span><span class="p">:</span> <span class="mi">1085</span><span class="p">,</span> <span class="nt">&#34;shrubland_hectares&#34;</span><span class="p">:</span> <span class="mi">893</span><span class="p">,</span> <span class="nt">&#34;grassland_hectares&#34;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="nt">&#34;bare_hectares&#34;</span><span class="p">:</span> <span class="mi">154</span><span class="p">,</span>
+ <span class="nt">&#34;hectares_oak&#34;</span><span class="p">:</span> <span class="mf">530.69</span><span class="p">,</span> <span class="nt">&#34;hectares_heather&#34;</span><span class="p">:</span> <span class="mf">562.13</span><span class="p">,</span> <span class="nt">&#34;hectares_pine&#34;</span><span class="p">:</span> <span class="mf">30.99</span><span class="p">,</span> <span class="nt">&#34;hectares_birch&#34;</span><span class="p">:</span> <span class="mf">22.38</span><span class="p">,</span>
+ <span class="nt">&#34;hectares_meadow&#34;</span><span class="p">:</span> <span class="mf">0.7</span><span class="p">,</span> <span class="nt">&#34;vegetation&#34;</span><span class="p">:</span> <span class="s2">&#34;valley&#34;</span><span class="p">,</span> <span class="nt">&#34;year&#34;</span><span class="p">:</span> <span class="mi">200</span><span class="p">}</span>
+</code></pre>
+
+<p align="center">
+  <img alt="Two charts of the example over 200 years: the share of the land under grassland, then shrubland, then forest; and the hectares of meadow, heather, oak, birch and pine" src="images/valley-over-time.svg" width="880">
+</p>
+
+<p>Every field and event is described in <a href="./model">the model</a>.</p>
+
+<h2 id="the-tests">The tests</h2>
+<pre><code class="language-bash">go vet ./...
+go <span class="nb">test</span> ./...
+</code></pre>
+
+<p>The tests run the plugin inside a go-simulator host on synthetic landscapes and check what must
+hold anywhere: every species within its habitat, pioneers followed by shade-tolerant trees,
+disturbances keeping pioneers, anchored plants staying (and small crowns covering their share of a
+cell), managed land keeping forms out, soft habitat edges, and the same seed giving the same
+landscape.</p>

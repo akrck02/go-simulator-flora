@@ -1,0 +1,82 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 330" width="880" height="330" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <style>
+    .bg { fill: #ffffff; }
+    .box { fill: #f6f8fa; stroke: #d0d7de; }
+    .accent { fill: #ddf4ff; stroke: #54aeff; }
+    .warm { fill: #fff1e5; stroke: #fb8f44; }
+    .leaf { fill: #dafbe1; stroke: #4ac26b; }
+    .title { fill: #1f2328; font-size: 15px; font-weight: 600; }
+    .text { fill: #59636e; font-size: 12.5px; }
+    .small { fill: #59636e; font-size: 11px; }
+    .code { fill: #0969da; font-size: 12.5px; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+    .label { fill: #59636e; font-size: 11.5px; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+    .arrow { stroke: #8c959f; stroke-width: 1.6; fill: none; }
+    .dashed { stroke: #8c959f; stroke-width: 1.2; fill: none; stroke-dasharray: 4 4; }
+    .head { fill: #8c959f; }
+    .grid { stroke: #d0d7de; stroke-width: 1; fill: none; }
+    .axis { stroke: #8c959f; stroke-width: 1; fill: none; }
+    .frame { fill: none; stroke: #d0d7de; stroke-width: 1; }
+    .gap { stroke: #ffffff; }
+    .ink { fill: #1f2328; }
+    @media (prefers-color-scheme: dark) {
+      .bg { fill: #0d1117; }
+      .box { fill: #161b22; stroke: #30363d; }
+      .accent { fill: #0c2d4b; stroke: #1f6feb; }
+      .warm { fill: #3d1d00; stroke: #db6d28; }
+      .leaf { fill: #0f2d1a; stroke: #2ea043; }
+      .title { fill: #e6edf3; }
+      .text, .label, .small { fill: #9198a1; }
+      .code { fill: #4493f8; }
+      .arrow, .dashed, .axis { stroke: #6e7681; }
+      .head { fill: #6e7681; }
+      .grid, .frame { stroke: #30363d; }
+      .gap { stroke: #0d1117; }
+      .ink { fill: #e6edf3; }
+    }
+  </style>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path class="head" d="M0,0 L10,5 L0,10 z"/>
+    </marker>
+  </defs>
+  <rect class="bg" width="880" height="330" rx="12"/>
+  <text class="title" x="32.0" y="34.0" text-anchor="start">Light through the layers</text>
+  <text class="text" x="32.0" y="88.0" text-anchor="start">trees</text>
+  <rect class="box" x="96" y="64.0" width="240" height="36" rx="6" stroke-width="1"/>
+  <rect x="96" y="64.0" width="144.0" height="36" rx="6" fill="#5e9a32"/>
+  <text class="small" x="244.0" y="116.0" text-anchor="middle">cover 0.6</text>
+  <text class="label" x="354.0" y="80.0" text-anchor="start">light that reaches it</text>
+  <text class="code" x="354.0" y="98.0" text-anchor="start">1, full light</text>
+  <text class="text" x="32.0" y="160.0" text-anchor="start">shrubs</text>
+  <rect class="box" x="96" y="136.0" width="240" height="36" rx="6" stroke-width="1"/>
+  <rect x="96" y="136.0" width="120.0" height="36" rx="6" fill="#b47aa9"/>
+  <text class="small" x="220.0" y="188.0" text-anchor="middle">cover 0.5</text>
+  <text class="label" x="354.0" y="152.0" text-anchor="start">light that reaches it</text>
+  <text class="code" x="354.0" y="170.0" text-anchor="start">1 − 0.9 × 0.6 = 0.46</text>
+  <text class="text" x="32.0" y="232.0" text-anchor="start">herbs</text>
+  <rect class="box" x="96" y="208.0" width="240" height="36" rx="6" stroke-width="1"/>
+  <rect x="96" y="208.0" width="192.0" height="36" rx="6" fill="#e6dc8c"/>
+  <text class="small" x="292.0" y="260.0" text-anchor="middle">cover 0.8</text>
+  <text class="label" x="354.0" y="224.0" text-anchor="start">light that reaches it</text>
+  <text class="code" x="354.0" y="242.0" text-anchor="start">1 − 0.9 × min(1, 1.1) = 0.10</text>
+  <text class="small" x="32.0" y="300.0" text-anchor="start">An example cell: each closed layer takes 90 % of the light from the layers below it.</text>
+  <text class="title" x="600.0" y="34.0" text-anchor="start">Light each tolerance needs</text>
+  <path fill="#2f7280" d="M610.0,250.0 V118.0 Q610.0,114.0 614.0,114.0 H638.0 Q642.0,114.0 642.0,118.0 V250.0 Z"/>
+  <text class="small" x="626.0" y="108.0" text-anchor="middle">80 %</text>
+  <text class="text" x="626.0" y="268.0" text-anchor="middle">1</text>
+  <path fill="#2f7280" d="M658.0,250.0 V152.0 Q658.0,148.0 662.0,148.0 H686.0 Q690.0,148.0 690.0,152.0 V250.0 Z"/>
+  <text class="small" x="674.0" y="142.0" text-anchor="middle">60 %</text>
+  <text class="text" x="674.0" y="268.0" text-anchor="middle">2</text>
+  <path fill="#2f7280" d="M706.0,250.0 V186.0 Q706.0,182.0 710.0,182.0 H734.0 Q738.0,182.0 738.0,186.0 V250.0 Z"/>
+  <text class="small" x="722.0" y="176.0" text-anchor="middle">40 %</text>
+  <text class="text" x="722.0" y="268.0" text-anchor="middle">3</text>
+  <path fill="#2f7280" d="M754.0,250.0 V220.0 Q754.0,216.0 758.0,216.0 H782.0 Q786.0,216.0 786.0,220.0 V250.0 Z"/>
+  <text class="small" x="770.0" y="210.0" text-anchor="middle">20 %</text>
+  <text class="text" x="770.0" y="268.0" text-anchor="middle">4</text>
+  <text class="small" x="818.0" y="244.0" text-anchor="middle">0 %</text>
+  <text class="text" x="818.0" y="268.0" text-anchor="middle">5</text>
+  <path class="axis" d="M600,250.0 H850"/>
+  <text class="small" x="600.0" y="288.0" text-anchor="start">shade tolerance: 1 needs full light,</text>
+  <text class="small" x="600.0" y="302.0" text-anchor="start">5 grows in deep shade</text>
+  <text class="small" x="32.0" y="316.0" text-anchor="start">With some light a species keeps (light − need) / (1 − need) of its growth, none below its need.</text>
+</svg>

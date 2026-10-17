@@ -1,0 +1,156 @@
+<h1 id="rules-of-the-flora-plugin">📏 Rules of the flora plugin</h1>
+
+<p>Version 0.1.0, protocol 2. Vegetation that spreads, competes for light, ages and comes back after disturbances, year by year, where the climate and the relief suit each species (after LANDIS: Mladenoff and He 1999; Scheller et al. 2007).</p>
+
+<p>This reference is generated from what the plugin itself tells the host (the <code>describe</code> message), so it always
+matches the code. Parameters go under <code>with:</code> in a rules file; see go-simulator&rsquo;s
+<a href="https://github.com/akrck02/go-simulator/blob/main/docs/rules-files.md" target="_blank">rules file reference</a>.</p>
+
+<table>
+<thead>
+<tr>
+<th>Rule</th>
+<th>What it does</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td><a href="#vegetation"><code>vegetation</code></a></td>
+<td>Sets up the landscape from the world&rsquo;s climate and relief, and advances its vegetation every step. Its instance name names the landscape.</td>
+</tr>
+
+<tr>
+<td><a href="#vegetation_indicators"><code>vegetation_indicators</code></a></td>
+<td>Emits a &ldquo;vegetation_indicators&rdquo; event in the listed years (every step when none): hectares of every species, of forest, shrubland, grassland and bare ground, and every region&rsquo;s forest share and commonest species.</td>
+</tr>
+</tbody>
+</table>
+
+<h2 id="vegetation"><code>vegetation</code></h2>
+
+<p>Sets up the landscape from the world&rsquo;s climate and relief, and advances its vegetation every step. Its instance name names the landscape.</p>
+
+<ul>
+<li><strong>Reads:</strong> entities with property <code>anchor</code>; fields <code>temperature</code>, <code>precipitation</code>, <code>elevation</code>, <code>slope</code>, <code>biome</code>; events <code>biomes</code></li>
+<li><strong>Writes:</strong> <code>vegetation</code>, <code>tree_cover</code>, <code>shrub_cover</code>, <code>herb_cover</code></li>
+</ul>
+
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Default</th>
+<th>Meaning</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td><code>species</code></td>
+<td>list</td>
+<td></td>
+<td>[{id, name, form: tree|shrub|herb, height, longevity, maturity, shade_tolerance, dispersal, growth, habitat, spreads}]</td>
+</tr>
+
+<tr>
+<td><code>cell</code></td>
+<td>number</td>
+<td></td>
+<td>km between cell centres (default: the temperature field&rsquo;s)</td>
+</tr>
+
+<tr>
+<td><code>softness</code></td>
+<td>map</td>
+<td></td>
+<td>{temperature: °C, precipitation: mm, elevation: m, slope, distance: m}: how far a habitat fades past its edges</td>
+</tr>
+
+<tr>
+<td><code>disturbance</code></td>
+<td>map</td>
+<td></td>
+<td>{chance: per cell and year, severity: share of trees and shrubs lost}</td>
+</tr>
+
+<tr>
+<td><code>background_seeds</code></td>
+<td>number</td>
+<td><code>0</code></td>
+<td>seeds reaching every cell from far away</td>
+</tr>
+
+<tr>
+<td><code>publish_every</code></td>
+<td>number</td>
+<td><code>10</code></td>
+<td>years between publishing the fields</td>
+</tr>
+
+<tr>
+<td><code>species_fields</code></td>
+<td>boolean</td>
+<td><code>false</code></td>
+<td>also publish cover_<id> for every species</td>
+</tr>
+
+<tr>
+<td><code>managed</code></td>
+<td>list</td>
+<td></td>
+<td>[{where: condition over the cell&rsquo;s facts, forms: [herb…]}]: land people keep, where only those forms grow</td>
+</tr>
+
+<tr>
+<td><code>metres_per_unit</code></td>
+<td>number</td>
+<td><code>1000</code></td>
+<td>size of a world unit in metres (the scenes are in km)</td>
+</tr>
+
+<tr>
+<td><code>seed</code></td>
+<td>number</td>
+<td><code>1</code></td>
+<td>the same seed gives the same landscape</td>
+</tr>
+</tbody>
+</table>
+
+<h2 id="vegetation-indicators"><code>vegetation_indicators</code></h2>
+
+<p>Emits a &ldquo;vegetation_indicators&rdquo; event in the listed years (every step when none): hectares of every species, of forest, shrubland, grassland and bare ground, and every region&rsquo;s forest share and commonest species.</p>
+
+<ul>
+<li><strong>Reads:</strong> nothing from other plugins</li>
+<li><strong>Writes:</strong> nothing (it only emits events)</li>
+</ul>
+
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Default</th>
+<th>Meaning</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td><code>vegetation</code></td>
+<td>text</td>
+<td></td>
+<td>instance name of the vegetation rule</td>
+</tr>
+
+<tr>
+<td><code>years</code></td>
+<td>list</td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>

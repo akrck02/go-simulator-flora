@@ -1,0 +1,121 @@
+<h1 id="how-it-works">🔍 How it works</h1>
+
+<h2 id="how-the-plugin-fits-go-simulator">How the plugin fits go-simulator</h2>
+
+<p align="center">
+  <img alt="The rules file and the terrain and climate plugins feed go-simulator, the host; every year the host sends the flora plugin a step over standard input and output, and the plugin answers with the vegetation, tree_cover, shrub_cover and herb_cover fields and a vegetation_indicators event" src="images/how-it-works.svg" width="880">
+</p>
+
+<p>go-simulator is the host. It keeps the world (its fields, events and entities) and moves the clock.
+The flora plugin is a separate program the host starts (<code>main.go</code> serves it over standard input and
+output, go-simulator&rsquo;s <a href="https://github.com/akrck02/go-simulator/blob/main/docs/protocol.md" target="_blank">protocol</a>).</p>
+
+<ul>
+<li>At the start the plugin <strong>describes</strong> itself: its two rules, their parameters, what each one
+reads and what it writes. That description is also where the <a href="./rules">rules reference</a> comes from.</li>
+<li><code>vegetation</code> reads the <code>temperature</code>, <code>precipitation</code>, <code>elevation</code>, <code>slope</code> and <code>biome</code> fields,
+the climate&rsquo;s <code>biomes</code> event and the anchors, and writes the <code>vegetation</code>, <code>tree_cover</code>,
+<code>shrub_cover</code> and <code>herb_cover</code> fields (and <code>cover_&lt;id&gt;</code> when asked). Its instance name names the
+landscape.</li>
+<li><code>vegetation_indicators</code> reads nothing from other plugins: it measures the landscape of the
+<code>vegetation</code> rule it names and emits a <code>vegetation_indicators</code> event.</li>
+</ul>
+
+<p>A plugin never touches the renderer: it reads its copy of the world and answers with changes
+(go-simulator&rsquo;s <a href="https://github.com/akrck02/go-simulator/blob/main/docs/writing-plugins.md" target="_blank">writing plugins</a>).
+Fields use physical units and shapes world units, as go-simulator&rsquo;s
+<a href="https://github.com/akrck02/go-simulator/blob/main/docs/vocabulary.md" target="_blank">vocabulary</a> lists. The
+plugin reads what the terrain and climate plugins publish from the world instead of loading it
+again, so they must come before it in the rules file.</p>
+
+<h2 id="a-step">A step</h2>
+
+<p>The stage&rsquo;s clock counts years. When the simulation starts, the <code>vegetation</code> rule lays the grid over the
+climate&rsquo;s extent, samples the fields, works out how well every cell suits every species, plants
+the anchored plants and publishes the bare landscape. On every step it simulates the years
+the step covers, one at a time:</p>
+
+<p align="center">
+  <img alt="Six steps in a row: seeds, saplings, recruitment, death, room and disturbance" src="images/one-year.svg" width="880">
+</p>
+
+<p>The seeds are spread first, for the whole landscape, with a separable Gaussian kernel (along the
+rows, then along the columns). Then every land cell grows, is disturbed and ages, from the state it
+had at the start of the year, so the cells are shared out over the processors. The fields are
+published again every <code>publish_every</code> years. The <a href="./model">model</a> has every formula.</p>
+
+<h2 id="the-code">The code</h2>
+
+<table>
+<thead>
+<tr>
+<th>File</th>
+<th>What is in it</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td><code>main.go</code></td>
+<td>starts the plugin</td>
+</tr>
+
+<tr>
+<td><code>flora/plugin.go</code></td>
+<td>the two rules, setting up the landscape, anchors and regions</td>
+</tr>
+
+<tr>
+<td><code>flora/landscape.go</code></td>
+<td>the grid and how the world&rsquo;s fields are sampled on it</td>
+</tr>
+
+<tr>
+<td><code>flora/habitat.go</code></td>
+<td>habitats, soft edges and distances to anchors</td>
+</tr>
+
+<tr>
+<td><code>flora/species.go</code></td>
+<td>species, settings, managed land, disturbance</td>
+</tr>
+
+<tr>
+<td><code>flora/succession.go</code></td>
+<td>one year: saplings, recruitment, death, room, disturbance, light</td>
+</tr>
+
+<tr>
+<td><code>flora/dispersal.go</code></td>
+<td>the seed kernel and the parallel loop</td>
+</tr>
+
+<tr>
+<td><code>flora/publish.go</code></td>
+<td>the fields, the names and the indicators</td>
+</tr>
+</tbody>
+</table>
+
+<h2 id="how-the-pictures-were-made">How the pictures were made</h2>
+
+<p>The maps and charts in these pages were drawn from the plugin&rsquo;s own answers. A small throwaway
+program, kept outside the repository, ran the real plugin in a go-simulator host and read the
+fields it published after every year:</p>
+
+<ul>
+<li><strong>The example mountain</strong> (the README&rsquo;s picture and the charts of its indicators):
+<code>examples/valley.yaml</code> with the real terrain and climate plugins, unchanged except for
+<code>publish_every: 1</code> and <code>species_fields: true</code>, so every year could be drawn. Each cell shows the
+species of the <code>vegetation</code> field, paler where it covers less, shaded by the relief.</li>
+<li><strong>Spreading, succession, disturbance, habitat and managed land</strong>: small made-up flat fields with
+a stand-in for the climate that only names the biomes, and the scenarios written in the pictures&rsquo;
+captions. The tests use the same kind of synthetic landscape.</li>
+</ul>
+
+<p>They are SVG drawings with their own light and dark colours, not screenshots: the viewer does not
+draw fields yet. The maps inside them are the cells of the published fields. The diagrams (how it
+fits, a cell, one year, the light) were drawn by hand in the same style; the cell in the landscape
+diagram is an example, not a measured one. The pictures of the made-up island in
+<a href="./model">the model</a> were in the docs before these pages; the scenario they come from
+is not in the repository.</p>

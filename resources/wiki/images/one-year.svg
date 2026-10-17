@@ -1,0 +1,98 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 250" width="880" height="250" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <style>
+    .bg { fill: #ffffff; }
+    .box { fill: #f6f8fa; stroke: #d0d7de; }
+    .accent { fill: #ddf4ff; stroke: #54aeff; }
+    .warm { fill: #fff1e5; stroke: #fb8f44; }
+    .leaf { fill: #dafbe1; stroke: #4ac26b; }
+    .title { fill: #1f2328; font-size: 15px; font-weight: 600; }
+    .text { fill: #59636e; font-size: 12.5px; }
+    .small { fill: #59636e; font-size: 11px; }
+    .code { fill: #0969da; font-size: 12.5px; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+    .label { fill: #59636e; font-size: 11.5px; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+    .arrow { stroke: #8c959f; stroke-width: 1.6; fill: none; }
+    .dashed { stroke: #8c959f; stroke-width: 1.2; fill: none; stroke-dasharray: 4 4; }
+    .head { fill: #8c959f; }
+    .grid { stroke: #d0d7de; stroke-width: 1; fill: none; }
+    .axis { stroke: #8c959f; stroke-width: 1; fill: none; }
+    .frame { fill: none; stroke: #d0d7de; stroke-width: 1; }
+    .gap { stroke: #ffffff; }
+    .ink { fill: #1f2328; }
+    @media (prefers-color-scheme: dark) {
+      .bg { fill: #0d1117; }
+      .box { fill: #161b22; stroke: #30363d; }
+      .accent { fill: #0c2d4b; stroke: #1f6feb; }
+      .warm { fill: #3d1d00; stroke: #db6d28; }
+      .leaf { fill: #0f2d1a; stroke: #2ea043; }
+      .title { fill: #e6edf3; }
+      .text, .label, .small { fill: #9198a1; }
+      .code { fill: #4493f8; }
+      .arrow, .dashed, .axis { stroke: #6e7681; }
+      .head { fill: #6e7681; }
+      .grid, .frame { stroke: #30363d; }
+      .gap { stroke: #0d1117; }
+      .ink { fill: #e6edf3; }
+    }
+  </style>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path class="head" d="M0,0 L10,5 L0,10 z"/>
+    </marker>
+  </defs>
+  <rect class="bg" width="880" height="250" rx="12"/>
+  <text class="title" x="440.0" y="32.0" text-anchor="middle">One year, in every land cell, for every species</text>
+  <rect class="box" x="23.0" y="56.0" width="124.0" height="150.0" rx="10" stroke-width="1.2"/>
+  <circle class="accent" cx="45.0" cy="80" r="12" stroke-width="1.2"/>
+  <text class="code" x="45.0" y="84.5" text-anchor="middle">1</text>
+  <text class="title" x="63.0" y="85.0" text-anchor="start">Seeds</text>
+  <text class="text" x="85.0" y="120.0" text-anchor="middle">mature plants</text>
+  <text class="text" x="85.0" y="138.0" text-anchor="middle">seed around them,</text>
+  <text class="text" x="85.0" y="156.0" text-anchor="middle">as far as their</text>
+  <text class="text" x="85.0" y="174.0" text-anchor="middle">dispersal</text>
+  <path class="arrow" d="M149.0,131 H163.0" marker-end="url(#arrow)"/>
+  <rect class="box" x="165.0" y="56.0" width="124.0" height="150.0" rx="10" stroke-width="1.2"/>
+  <circle class="accent" cx="187.0" cy="80" r="12" stroke-width="1.2"/>
+  <text class="code" x="187.0" y="84.5" text-anchor="middle">2</text>
+  <text class="title" x="205.0" y="85.0" text-anchor="start">Saplings</text>
+  <text class="text" x="227.0" y="120.0" text-anchor="middle">seeds take where</text>
+  <text class="text" x="227.0" y="138.0" text-anchor="middle">the habitat suits</text>
+  <text class="text" x="227.0" y="156.0" text-anchor="middle">and there is light</text>
+  <text class="text" x="227.0" y="174.0" text-anchor="middle">for them</text>
+  <path class="arrow" d="M291.0,131 H305.0" marker-end="url(#arrow)"/>
+  <rect class="box" x="307.0" y="56.0" width="124.0" height="150.0" rx="10" stroke-width="1.2"/>
+  <circle class="accent" cx="329.0" cy="80" r="12" stroke-width="1.2"/>
+  <text class="code" x="329.0" y="84.5" text-anchor="middle">3</text>
+  <text class="title" x="347.0" y="85.0" text-anchor="start">Recruitment</text>
+  <text class="text" x="369.0" y="120.0" text-anchor="middle">saplings take</text>
+  <text class="text" x="369.0" y="138.0" text-anchor="middle">the room plants</text>
+  <text class="text" x="369.0" y="156.0" text-anchor="middle">left in their</text>
+  <text class="text" x="369.0" y="174.0" text-anchor="middle">layer</text>
+  <path class="arrow" d="M433.0,131 H447.0" marker-end="url(#arrow)"/>
+  <rect class="box" x="449.0" y="56.0" width="124.0" height="150.0" rx="10" stroke-width="1.2"/>
+  <circle class="accent" cx="471.0" cy="80" r="12" stroke-width="1.2"/>
+  <text class="code" x="471.0" y="84.5" text-anchor="middle">4</text>
+  <text class="title" x="489.0" y="85.0" text-anchor="start">Death</text>
+  <text class="text" x="511.0" y="120.0" text-anchor="middle">of age, of a</text>
+  <text class="text" x="511.0" y="138.0" text-anchor="middle">habitat that does</text>
+  <text class="text" x="511.0" y="156.0" text-anchor="middle">not suit, of</text>
+  <text class="text" x="511.0" y="174.0" text-anchor="middle">deep shade</text>
+  <path class="arrow" d="M575.0,131 H589.0" marker-end="url(#arrow)"/>
+  <rect class="box" x="591.0" y="56.0" width="124.0" height="150.0" rx="10" stroke-width="1.2"/>
+  <circle class="accent" cx="613.0" cy="80" r="12" stroke-width="1.2"/>
+  <text class="code" x="613.0" y="84.5" text-anchor="middle">5</text>
+  <text class="title" x="631.0" y="85.0" text-anchor="start">Room</text>
+  <text class="text" x="653.0" y="120.0" text-anchor="middle">a layer that</text>
+  <text class="text" x="653.0" y="138.0" text-anchor="middle">grew past the</text>
+  <text class="text" x="653.0" y="156.0" text-anchor="middle">ground shares it</text>
+  <text class="text" x="653.0" y="174.0" text-anchor="middle">out</text>
+  <path class="arrow" d="M717.0,131 H731.0" marker-end="url(#arrow)"/>
+  <rect class="warm" x="733.0" y="56.0" width="124.0" height="150.0" rx="10" stroke-width="1.2"/>
+  <circle class="accent" cx="755.0" cy="80" r="12" stroke-width="1.2"/>
+  <text class="code" x="755.0" y="84.5" text-anchor="middle">6</text>
+  <text class="title" x="773.0" y="85.0" text-anchor="start">Disturbance</text>
+  <text class="text" x="795.0" y="120.0" text-anchor="middle">by chance, a cell</text>
+  <text class="text" x="795.0" y="138.0" text-anchor="middle">loses most of</text>
+  <text class="text" x="795.0" y="156.0" text-anchor="middle">its trees and</text>
+  <text class="text" x="795.0" y="174.0" text-anchor="middle">shrubs</text>
+  <text class="small" x="440.0" y="232.0" text-anchor="middle">Steps 1 to 4 read the state the cell had at the start of the year, so the cells are worked on in parallel, in any order.</text>
+</svg>

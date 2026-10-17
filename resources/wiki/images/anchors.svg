@@ -1,0 +1,69 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 420" width="880" height="420" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <style>
+    .bg { fill: #ffffff; }
+    .box { fill: #f6f8fa; stroke: #d0d7de; }
+    .accent { fill: #ddf4ff; stroke: #54aeff; }
+    .warm { fill: #fff1e5; stroke: #fb8f44; }
+    .leaf { fill: #dafbe1; stroke: #4ac26b; }
+    .title { fill: #1f2328; font-size: 15px; font-weight: 600; }
+    .text { fill: #59636e; font-size: 12.5px; }
+    .small { fill: #59636e; font-size: 11px; }
+    .code { fill: #0969da; font-size: 12.5px; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+    .label { fill: #59636e; font-size: 11.5px; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+    .arrow { stroke: #8c959f; stroke-width: 1.6; fill: none; }
+    .dashed { stroke: #8c959f; stroke-width: 1.2; fill: none; stroke-dasharray: 4 4; }
+    .head { fill: #8c959f; }
+    .grid { stroke: #d0d7de; stroke-width: 1; fill: none; }
+    .axis { stroke: #8c959f; stroke-width: 1; fill: none; }
+    .frame { fill: none; stroke: #d0d7de; stroke-width: 1; }
+    .gap { stroke: #ffffff; }
+    .ink { fill: #1f2328; }
+    @media (prefers-color-scheme: dark) {
+      .bg { fill: #0d1117; }
+      .box { fill: #161b22; stroke: #30363d; }
+      .accent { fill: #0c2d4b; stroke: #1f6feb; }
+      .warm { fill: #3d1d00; stroke: #db6d28; }
+      .leaf { fill: #0f2d1a; stroke: #2ea043; }
+      .title { fill: #e6edf3; }
+      .text, .label, .small { fill: #9198a1; }
+      .code { fill: #4493f8; }
+      .arrow, .dashed, .axis { stroke: #6e7681; }
+      .head { fill: #6e7681; }
+      .grid, .frame { stroke: #30363d; }
+      .gap { stroke: #0d1117; }
+      .ink { fill: #e6edf3; }
+    }
+  </style>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path class="head" d="M0,0 L10,5 L0,10 z"/>
+    </marker>
+  </defs>
+  <rect class="bg" width="880" height="420" rx="12"/>
+  <text class="title" x="32.0" y="32.0" text-anchor="start">Year 250, with managed land and an anchored tree</text>
+  <image x="32.0" y="44.0" width="560.0" height="326.7" href="data:image/png;base64,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"/>
+  <rect class="frame" x="32.0" y="44.0" width="560.0" height="326.7" rx="3"/>
+  <circle cx="382.0" cy="207.3" r="28.0" fill="none" stroke="#ffffff" stroke-width="1.5" stroke-dasharray="4 3"/>
+  <circle cx="382.0" cy="207.3" r="4" fill="#ffffff"/>
+  <path d="M148.7,44 V370.7" stroke="#ffffff" stroke-width="1.5" stroke-dasharray="4 3"/>
+  <text class="text" x="620.0" y="70.0" text-anchor="start">Left strip: biome fields,</text>
+  <text class="text" x="620.0" y="88.0" text-anchor="start">managed: only herbs grow.</text>
+  <text class="text" x="620.0" y="150.0" text-anchor="start">Dashed circle: within 120 m</text>
+  <text class="text" x="620.0" y="168.0" text-anchor="start">of the old oak, managed:</text>
+  <text class="text" x="620.0" y="186.0" text-anchor="start">only herbs, a clearing.</text>
+  <text class="text" x="620.0" y="250.0" text-anchor="start">White dot: the anchor that</text>
+  <text class="text" x="620.0" y="268.0" text-anchor="start">plants the old oak (crown</text>
+  <text class="text" x="620.0" y="286.0" text-anchor="start">20 m, a share of its cell).</text>
+  <text class="text" x="620.0" y="340.0" text-anchor="start">Everywhere else the oak</text>
+  <text class="text" x="620.0" y="358.0" text-anchor="start">forest closes over time.</text>
+  <rect x="225.0" y="394.0" width="12" height="12" rx="3" fill="#e6dc8c"/>
+  <text class="text" x="243.0" y="404.0" text-anchor="start">meadow</text>
+  <rect x="307.0" y="394.0" width="12" height="12" rx="3" fill="#bccb5a"/>
+  <text class="text" x="325.0" y="404.0" text-anchor="start">birch</text>
+  <rect x="382.0" y="394.0" width="12" height="12" rx="3" fill="#5e9a32"/>
+  <text class="text" x="400.0" y="404.0" text-anchor="start">oak</text>
+  <rect x="443.0" y="394.0" width="12" height="12" rx="3" fill="#7a4f1d"/>
+  <text class="text" x="461.0" y="404.0" text-anchor="start">the old oak</text>
+  <rect x="560.0" y="394.0" width="12" height="12" rx="3" fill="#d6c9ae"/>
+  <text class="text" x="578.0" y="404.0" text-anchor="start">bare ground</text>
+</svg>
