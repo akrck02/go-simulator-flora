@@ -100,6 +100,7 @@ opens a gap. The plugin never touches the renderer: it answers with fields and e
 
 | | |
 |---|---|
+| [The flora quest](docs/quest.md) | Grow an island's plants over 200 years in 5 levels. |
 | [Getting started](docs/getting-started.md) | The folders it needs, running the example, what it writes, the tests. |
 | [The model](docs/model.md) | Cells, habitats, layers and light, one year, spreading, succession, disturbance, anchors, managed land, outputs. |
 | [Writing a scenario](docs/scenario.md) | How to write the species, with an annotated example and advice on traits. |
