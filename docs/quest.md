@@ -415,7 +415,7 @@ An objective that fails if the island is not mostly forest by year 200.
 
 ## Final challenge · Keeper of the old oak
 
-The story says an **old oak** stands in the south-west of the island, in a **clearing** people keep
+The story says an **old oak** stands in the north-west of the island, in a **clearing** people keep
 open round it; and the low ground by the shore is **fields**, kept as grass.
 
 > **Hint:** an anchor with `role: plant` plants a fixed tree of a species that does not spread
@@ -426,7 +426,7 @@ Try it on your own first, then compare with the solution.
 
 ![The final challenge: the island at year 200, with meadow kept on the low ground](images/quest/final.jpg)
 
-![Close up: the old oak in its clearing on the south-west slope](images/quest/final-close.jpg)
+![Close up: the old oak in its clearing on the north-west slope](images/quest/final-close.jpg)
 
 <details>
 <summary>🔓 Show the solution</summary>
