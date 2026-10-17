@@ -399,13 +399,13 @@ species and of forest, shrubland, grassland and bare ground.
 
 #### Bonus (optional): check it
 
-An objective that fails if the island is not mostly forest by year 200.
+An objective that fails if the storms leave less than 400 hectares of forest at year 200 (without storms, level 4 had about 1,400; with them, about 460).
 
 <details>
 <summary>🔓 Show the solution</summary>
 
 <pre><code>    objectives:
-      - {name: a forested island, at: 200, event: vegetation_indicators, value: forest_hectares, min: 1000}</code></pre>
+      - {name: a forested island, at: 200, event: vegetation_indicators, value: forest_hectares, min: 400}</code></pre>
 
 </details>
 
