@@ -8,11 +8,11 @@
 
 <p>go-simulator is the host. It keeps the world (its fields, events and entities) and moves the clock.
 The flora plugin is a separate program the host starts (<code>main.go</code> serves it over standard input and
-output, go-simulator&rsquo;s <a href="https://github.com/akrck02/go-simulator/blob/main/docs/protocol.md" target="_blank">protocol</a>).</p>
+output, go-simulator&rsquo;s <a href="https://github.com/akrck02/go-simulator/blob/main/docs/5-reference/2-protocol.md" target="_blank">protocol</a>).</p>
 
 <ul>
 <li>At the start the plugin <strong>describes</strong> itself: its two rules, their parameters, what each one
-reads and what it writes. That description is also where the <a href="./rules">rules reference</a> comes from.</li>
+reads and what it writes. That description is also where the <a href="./7-rules-reference">rules reference</a> comes from.</li>
 <li><code>vegetation</code> reads the <code>temperature</code>, <code>precipitation</code>, <code>elevation</code>, <code>slope</code> and <code>biome</code> fields,
 the climate&rsquo;s <code>biomes</code> event and the anchors, and writes the <code>vegetation</code>, <code>tree_cover</code>,
 <code>shrub_cover</code> and <code>herb_cover</code> fields (and <code>cover_&lt;id&gt;</code> when asked). Its instance name names the
@@ -22,9 +22,9 @@ landscape.</li>
 </ul>
 
 <p>A plugin never touches the renderer: it reads its copy of the world and answers with changes
-(go-simulator&rsquo;s <a href="https://github.com/akrck02/go-simulator/blob/main/docs/writing-plugins.md" target="_blank">writing plugins</a>).
+(go-simulator&rsquo;s <a href="https://github.com/akrck02/go-simulator/blob/main/docs/4-guides/4-writing-plugins.md" target="_blank">writing plugins</a>).
 Fields use physical units and shapes world units, as go-simulator&rsquo;s
-<a href="https://github.com/akrck02/go-simulator/blob/main/docs/vocabulary.md" target="_blank">vocabulary</a> lists. The
+<a href="https://github.com/akrck02/go-simulator/blob/main/docs/5-reference/1-vocabulary-and-conditions.md" target="_blank">vocabulary</a> lists. The
 plugin reads what the terrain and climate plugins publish from the world instead of loading it
 again, so they must come before it in the rules file.</p>
 
@@ -42,7 +42,7 @@ the step covers, one at a time:</p>
 <p>The seeds are spread first, for the whole landscape, with a separable Gaussian kernel (along the
 rows, then along the columns). Then every land cell grows, is disturbed and ages, from the state it
 had at the start of the year, so the cells are shared out over the processors. The fields are
-published again every <code>publish_every</code> years. The <a href="./model">model</a> has every formula.</p>
+published again every <code>publish_every</code> years. The <a href="./5-the-model">model</a> has every formula.</p>
 
 <h2 id="the-code">The code</h2>
 
@@ -117,5 +117,5 @@ captions. The tests use the same kind of synthetic landscape.</li>
 draw fields yet. The maps inside them are the cells of the published fields. The diagrams (how it
 fits, a cell, one year, the light) were drawn by hand in the same style; the cell in the landscape
 diagram is an example, not a measured one. The pictures of the made-up island in
-<a href="./model">the model</a> were in the docs before these pages; the scenario they come from
+<a href="./5-the-model">the model</a> were in the docs before these pages; the scenario they come from
 is not in the repository.</p>

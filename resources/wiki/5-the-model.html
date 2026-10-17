@@ -11,11 +11,11 @@ land let it live.</p>
 </p>
 
 <p>It knows nothing about any world: the species, their traits and their habitats come from the
-<a href="./scenario">scenario</a>. This page explains what happens in each cell, every year.</p>
+<a href="./4-writing-a-scenario">scenario</a>. This page explains what happens in each cell, every year.</p>
 
 <p>The pictures on this page come from real runs of the plugin, drawn in 2D from the fields it
 published: the example mountain, and small made-up fields that show one thing each
-(<a href="./how-it-works">how they were made</a>).</p>
+(<a href="./6-how-it-works">how they were made</a>).</p>
 
 <h2 id="the-landscape">The landscape</h2>
 
@@ -42,7 +42,7 @@ regeneration of LANDIS);</li>
 <h2 id="habitat">Habitat</h2>
 
 <p>A species&rsquo; habitat is an envelope over the facts of a cell (bioclimatic envelope models, Busby
-1991), written like go-simulator&rsquo;s <a href="https://github.com/akrck02/go-simulator/blob/main/docs/vocabulary.md#conditions" target="_blank">conditions</a>:</p>
+1991), written like go-simulator&rsquo;s <a href="https://github.com/akrck02/go-simulator/blob/main/docs/5-reference/1-vocabulary-and-conditions.md#conditions" target="_blank">conditions</a>:</p>
 <pre><code class="language-yaml"><span class="nt">habitat</span><span class="p">:</span>
   <span class="nt">temperature</span><span class="p">:</span> {<span class="nt">min</span><span class="p">:</span> <span class="nt">9, max</span><span class="p">:</span> <span class="m">18</span>}        <span class="c"># °C, the yearly mean</span>
   <span class="nt">precipitation</span><span class="p">:</span> {<span class="nt">min</span><span class="p">:</span> <span class="m">900</span>}             <span class="c"># mm a year</span>
