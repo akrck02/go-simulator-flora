@@ -1,6 +1,6 @@
 # go-simulator-flora
 
-Vegetation growth plugin for go-simulator, after the LANDIS succession model: habitat, spread, light, ageing and disturbance. Start with `docs/model.md`; parameters in `docs/rules.md`. Examples are in `examples/`.
+Vegetation growth plugin for go-simulator, after the LANDIS succession model: habitat, spread, light, ageing and disturbance. Start with `docs/5-the-model.md`; parameters in `docs/7-rules-reference.md`. Examples are in `examples/`.
 
 ## Commands
 
@@ -35,10 +35,10 @@ Sibling checkouts are required: `go.mod` replaces the akrck02 modules with `../g
 ## Plugin contract
 
 - A plugin never touches the renderer: it reads its copy of the world and answers with changes
-  (see go-simulator's `docs/writing-plugins.md`).
+  (see go-simulator's `docs/4-guides/4-writing-plugins.md`).
 - Fields use physical units and shapes use world units, as listed in go-simulator's
-  `docs/vocabulary.md`. Read what other plugins publish from the world instead of loading it again.
-- Every number of the model comes from a published source (cite it in `docs/model.md`) or from the
+  `docs/5-reference/1-vocabulary-and-conditions.md`. Read what other plugins publish from the world instead of loading it again.
+- Every number of the model comes from a published source (cite it in `docs/5-the-model.md`) or from the
   scenario/rules file; nothing about a particular place is hard-coded.
-- `docs/rules.md` is generated from the plugin's `describe` message: when a rule or a parameter
+- `docs/7-rules-reference.md` is generated from the plugin's `describe` message: when a rule or a parameter
   changes, regenerate it so it stays in step with the code.

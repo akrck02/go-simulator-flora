@@ -57,9 +57,9 @@ stages:
         with: {vegetation: valley, years: [50, 100, 200]}
 ```
 
-The whole species list and every setting are in [writing a scenario](scenario.md); the rules
+The whole species list and every setting are in [writing a scenario](4-writing-a-scenario.md); the rules
 file's own keys are in go-simulator's
-[rules file reference](https://github.com/akrck02/go-simulator/blob/main/docs/rules-files.md).
+[rules file reference](https://github.com/akrck02/go-simulator/blob/main/docs/4-guides/1-rules-files.md).
 
 ## What it writes
 
@@ -84,7 +84,7 @@ The same for years 100 and 200. An indicators event looks like this (year 200 of
   <img alt="Two charts of the example over 200 years: the share of the land under grassland, then shrubland, then forest; and the hectares of meadow, heather, oak, birch and pine" src="images/valley-over-time.svg" width="880">
 </p>
 
-Every field and event is described in [the model](model.md#what-it-publishes).
+Every field and event is described in [the model](5-the-model.md#what-it-publishes).
 
 ## The tests
 
