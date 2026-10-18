@@ -7,7 +7,7 @@ plugin plays that story, year by year, for every species you give it, wherever t
 land let it live.</p>
 
 <p align="center">
-  <img alt="The example mountain at years 20, 50, 100 and 200: meadow covers the bare ground first, heather takes over, pine holds the summit and oak closes the forest in the lowlands" src="images/hero.svg" width="880">
+  <img alt="The example mountain at years 20, 50, 100 and 200: meadow covers the bare ground first, heather takes over, pine holds the summit and oak closes the forest in the lowlands" src="./images/hero.svg" width="880">
 </p>
 
 <p>It knows nothing about any world: the species, their traits and their habitats come from the
@@ -20,7 +20,7 @@ published: the example mountain, and small made-up fields that show one thing ea
 <h2 id="the-landscape">The landscape</h2>
 
 <p align="center">
-  <img alt="A grid of cells, one picked out: in every land cell, for every species, its form, its cover, its saplings and the years it has grown there" src="images/model.svg" width="880">
+  <img alt="A grid of cells, one picked out: in every land cell, for every species, its form, its cover, its saplings and the years it has grown there" src="./images/model.svg" width="880">
 </p>
 
 <p>The landscape is a grid over the climate&rsquo;s extent, with cells of <code>cell</code> km (default: the
@@ -59,7 +59,7 @@ hold or not. The suitability of a cell is the product of every fact&rsquo;s: 1 w
 0 where anything is out of reach. It is worked out once, at the start.</p>
 
 <p align="center">
-  <img alt="Above, the suitability of oak (min 11 °C), beech (6 to 10 °C) and pine (max 5 °C) along a strip from 16 °C to 0 °C, each fading over 1.5 °C past its edge; below, what grows on that strip after 250 years: oak, a band of meadow, beech, another band of meadow, pine" src="images/habitat.svg" width="880">
+  <img alt="Above, the suitability of oak (min 11 °C), beech (6 to 10 °C) and pine (max 5 °C) along a strip from 16 °C to 0 °C, each fading over 1.5 °C past its edge; below, what grows on that strip after 250 years: oak, a band of meadow, beech, another band of meadow, pine" src="./images/habitat.svg" width="880">
 </p>
 
 <p><em>A made-up strip from 16 °C in the west to 0 °C in the east. Each tree grows where its range is; a
@@ -78,7 +78,7 @@ keeps <code>(light − need) / (1 − need)</code> of its growth, none below wha
 </ul>
 
 <p align="center">
-  <img alt="An example cell: trees covering 0.6 get full light, shrubs below them 0.46 of it, herbs below both 0.10; and a bar chart of the light each shade tolerance needs: 80, 60, 40, 20 and 0 per cent" src="images/light.svg" width="880">
+  <img alt="An example cell: trees covering 0.6 get full light, shrubs below them 0.46 of it, herbs below both 0.10; and a bar chart of the light each shade tolerance needs: 80, 60, 40, 20 and 0 per cent" src="./images/light.svg" width="880">
 </p>
 
 <h2 id="one-year">One year</h2>
@@ -86,7 +86,7 @@ keeps <code>(light − need) / (1 − need)</code> of its growth, none below wha
 <p>This is the heart of the model. For every land cell and species, from the state at the start of the year:</p>
 
 <p align="center">
-  <img alt="Six steps in a row: seeds, saplings, recruitment, death, room and disturbance" src="images/one-year.svg" width="880">
+  <img alt="Six steps in a row: seeds, saplings, recruitment, death, room and disturbance" src="./images/one-year.svg" width="880">
 </p>
 
 <ol>
@@ -125,7 +125,7 @@ Every plant that grows from them bears seeds in its turn once it is mature, so a
 as a front, faster the farther its seeds fly and the sooner it matures.</p>
 
 <p align="center">
-  <img alt="A flat field with one planted birch on the left and one planted oak on the right, at years 20, 40, 60 and 120: the birch spreads over most of the field in sixty years, the oak only a small round patch in 120" src="images/spread.svg" width="880">
+  <img alt="A flat field with one planted birch on the left and one planted oak on the right, at years 20, 40, 60 and 120: the birch spreads over most of the field in sixty years, the oak only a small round patch in 120" src="./images/spread.svg" width="880">
 </p>
 
 <p><em>Birch (dispersal 400 m, seeds from year 8) against oak (60 m, from year 40), from one planted
@@ -141,7 +141,7 @@ the forest. A light-demanding species forms open woodland, because it only regen
 own cover leaves enough light.</p>
 
 <p align="center">
-  <img alt="Mean cover of every species over 400 years on a flat field without disturbances: meadow peaks near year 25, birch holds about 30 % until year 150, oak rises to 60 % and beech slowly follows; heather stays low" src="images/succession-calm.svg" width="880">
+  <img alt="Mean cover of every species over 400 years on a flat field without disturbances: meadow peaks near year 25, birch holds about 30 % until year 150, oak rises to 60 % and beech slowly follows; heather stays low" src="./images/succession-calm.svg" width="880">
 </p>
 
 <p><em>A made-up field where every species could live everywhere, from bare ground and without
@@ -164,7 +164,7 @@ shrubs, as after windthrow or a fire. The cleared ground gets nearly full light,
 come back there first.</p>
 
 <p align="center">
-  <img alt="The same field at year 400 with no disturbance, a chance of 0.005 and a chance of 0.02 a year: a closed oak forest; an oak forest with scattered clearings; a mosaic of birch, meadow and a little oak" src="images/disturbance.svg" width="880">
+  <img alt="The same field at year 400 with no disturbance, a chance of 0.005 and a chance of 0.02 a year: a closed oak forest; an oak forest with scattered clearings; a mosaic of birch, meadow and a little oak" src="./images/disturbance.svg" width="880">
 </p>
 
 <p><em>The field of the succession chart at year 400 with three disturbance chances. With a gap every
@@ -196,7 +196,7 @@ without soft edges), only the listed forms grow.</p>
 </code></pre>
 
 <p align="center">
-  <img alt="A made-up field at year 250: a strip of fields on the left kept as meadow, an oak forest elsewhere, and a round meadow clearing of 120 metres around an anchored old oak" src="images/anchors.svg" width="880">
+  <img alt="A made-up field at year 250: a strip of fields on the left kept as meadow, an oak forest elsewhere, and a round meadow clearing of 120 metres around an anchored old oak" src="./images/anchors.svg" width="880">
 </p>
 
 <p><em>The two managed lands above on a made-up field of 2.4 × 1.4 km in cells of 20 m, with an
@@ -250,7 +250,7 @@ everywhere else.</em></p>
 with <code>snapshot_fields</code>: a large landscape&rsquo;s fields take megabytes each.</p>
 
 <p align="center">
-  <img alt="Two charts of the example mountain over 200 years from its vegetation_indicators events: the share of the land under grassland, shrubland and forest, and the hectares of every species" src="images/valley-over-time.svg" width="880">
+  <img alt="Two charts of the example mountain over 200 years from its vegetation_indicators events: the share of the land under grassland, shrubland and forest, and the hectares of every species" src="./images/valley-over-time.svg" width="880">
 </p>
 
 <h2 id="determinism-and-speed">Determinism and speed</h2>

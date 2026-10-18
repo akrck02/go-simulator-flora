@@ -3,7 +3,7 @@
 <h2 id="how-the-plugin-fits-go-simulator">How the plugin fits go-simulator</h2>
 
 <p align="center">
-  <img alt="The rules file and the terrain and climate plugins feed go-simulator, the host; every year the host sends the flora plugin a step over standard input and output, and the plugin answers with the vegetation, tree_cover, shrub_cover and herb_cover fields and a vegetation_indicators event" src="images/how-it-works.svg" width="880">
+  <img alt="The rules file and the terrain and climate plugins feed go-simulator, the host; every year the host sends the flora plugin a step over standard input and output, and the plugin answers with the vegetation, tree_cover, shrub_cover and herb_cover fields and a vegetation_indicators event" src="./images/how-it-works.svg" width="880">
 </p>
 
 <p>go-simulator is the host. It keeps the world (its fields, events and entities) and moves the clock.
@@ -36,7 +36,7 @@ the anchored plants and publishes the bare landscape. On every step it simulates
 the step covers, one at a time:</p>
 
 <p align="center">
-  <img alt="Six steps in a row: seeds, saplings, recruitment, death, room and disturbance" src="images/one-year.svg" width="880">
+  <img alt="Six steps in a row: seeds, saplings, recruitment, death, room and disturbance" src="./images/one-year.svg" width="880">
 </p>
 
 <p>The seeds are spread first, for the whole landscape, with a separable Gaussian kernel (along the
