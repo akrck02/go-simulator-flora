@@ -43,7 +43,7 @@ snapshot, renamed), and `empty.geojson`, a map with nothing on it:
 ### Looking at the vegetation
 
 The plugin publishes a field `vegetation`: for every cell, the species that marks it most (or −1,
-bare ground). `layer/main.go` turns a snapshot of it into a layer go-scene-builder can colour and
+bare ground). `layer/main.go` turns a snapshot of it into a layer Go Scene Builder can colour and
 sow trees on:
 
 ```go
@@ -129,7 +129,7 @@ func speciesNames(path string) []string {
 }
 ```
 
-`models.yaml`, the trees (go-scene-builder's [models](https://github.com/akrck02/go-scene-builder/blob/master/docs/6-decoration.md#models)):
+`models.yaml`, the trees (Go Scene Builder's [models](https://github.com/akrck02/go-scene-builder/blob/master/docs/6-decoration.md#models)):
 
 ```yaml
 models:

@@ -2,8 +2,8 @@
 
 ## The folders it needs
 
-The plugin is developed next to the projects it uses: `go.mod` replaces go-simulator, go-renderer
-and go-scene-builder with the folders beside this one, and the example starts the terrain and
+The plugin is developed next to the projects it uses: `go.mod` replaces Go Simulator, Go Renderer
+and Go Scene Builder with the folders beside this one, and the example starts the terrain and
 climate plugins from theirs. Clone them side by side:
 
 ```
@@ -58,7 +58,7 @@ stages:
 ```
 
 The whole species list and every setting are in [writing a scenario](4-writing-a-scenario.md); the rules
-file's own keys are in go-simulator's
+file's own keys are in Go Simulator's
 [rules file reference](https://github.com/akrck02/go-simulator/blob/main/docs/4-guides/1-rules-files.md).
 
 ## What it writes
@@ -93,7 +93,7 @@ go vet ./...
 go test ./...
 ```
 
-The tests run the plugin inside a go-simulator host on synthetic landscapes and check what must
+The tests run the plugin inside a Go Simulator host on synthetic landscapes and check what must
 hold anywhere: every species within its habitat, pioneers followed by shade-tolerant trees,
 disturbances keeping pioneers, anchored plants staying (and small crowns covering their share of a
 cell), managed land keeping forms out, soft habitat edges, and the same seed giving the same

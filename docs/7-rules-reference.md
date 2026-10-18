@@ -3,7 +3,7 @@
 Version 0.1.0, protocol 2. Vegetation that spreads, competes for light, ages and comes back after disturbances, year by year, where the climate and the relief suit each species (after LANDIS: Mladenoff and He 1999; Scheller et al. 2007).
 
 This reference is generated from what the plugin itself tells the host (the `describe` message), so it always
-matches the code. Parameters go under `with:` in a rules file; see go-simulator's
+matches the code. Parameters go under `with:` in a rules file; see Go Simulator's
 [rules file reference](https://github.com/akrck02/go-simulator/blob/main/docs/4-guides/1-rules-files.md).
 
 | Rule | What it does |

@@ -4,7 +4,7 @@
 
 # Go flora simulator
 
-**Vegetation that grows, year by year, as a plugin for [go-simulator](https://github.com/akrck02/go-simulator).**
+**Vegetation that grows, year by year, as a plugin for [Go Simulator](https://github.com/akrck02/go-simulator).**
 Where every species can live, from the climate and the relief in the world, and how plants spread,
 compete for light, age and come back after a disturbance, after the LANDIS succession model
 (Mladenoff and He 1999; Scheller et al. 2007). It knows nothing about any world: the species, their
@@ -35,7 +35,7 @@ reviewed it line by line. Treat it as a working draft, not as code I vouch for.
   <img alt="The example mountain at years 20, 50, 100 and 200: meadow covers the bare ground first, heather takes over, pine holds the summit and oak closes the forest in the lowlands" src="docs/images/hero.svg" width="880">
 </p>
 
-<p align="center"><sub><code>examples/valley.yaml</code> run in go-simulator: a synthetic mountain grows its vegetation from bare ground.</sub></p>
+<p align="center"><sub><code>examples/valley.yaml</code> run in Go Simulator: a synthetic mountain grows its vegetation from bare ground.</sub></p>
 
 ## ✨ What it looks like
 
@@ -68,8 +68,8 @@ reviewed it line by line. Treat it as a working draft, not as code I vouch for.
 
 ## 🚀 Quick start
 
-Clone [go-simulator](https://github.com/akrck02/go-simulator), go-simulator-terrain and
-go-simulator-climate next to this repository, then grow the example:
+Clone [Go Simulator](https://github.com/akrck02/go-simulator), Go Terrain Simulator and
+Go Climate Simulator next to this repository, then grow the example:
 
 ```bash
 cd ../go-simulator
@@ -89,7 +89,7 @@ first, then oak in the lowlands and pine on the slopes. A species is a few lines
 ## 🔍 How it works
 
 <p align="center">
-  <img alt="The rules file and the terrain and climate plugins feed go-simulator, the host; every year the host sends the flora plugin a step over standard input and output, and the plugin answers with the vegetation, tree_cover, shrub_cover and herb_cover fields and a vegetation_indicators event" src="docs/images/how-it-works.svg" width="880">
+  <img alt="The rules file and the terrain and climate plugins feed Go Simulator, the host; every year the host sends the flora plugin a step over standard input and output, and the plugin answers with the vegetation, tree_cover, shrub_cover and herb_cover fields and a vegetation_indicators event" src="docs/images/how-it-works.svg" width="880">
 </p>
 
 The landscape is a grid over the climate's extent. Every year, in every land cell and for every
@@ -106,5 +106,5 @@ opens a gap. The plugin never touches the renderer: it answers with fields and e
 | [Getting started](docs/3-getting-started.md) | The folders it needs, running the example, what it writes, the tests. |
 | [The model](docs/5-the-model.md) | Cells, habitats, layers and light, one year, spreading, succession, disturbance, anchors, managed land, outputs. |
 | [Writing a scenario](docs/4-writing-a-scenario.md) | How to write the species, with an annotated example and advice on traits. |
-| [How it works](docs/6-how-it-works.md) | How the plugin fits go-simulator, what it reads and writes, and how the pictures were made. |
+| [How it works](docs/6-how-it-works.md) | How the plugin fits Go Simulator, what it reads and writes, and how the pictures were made. |
 | [Rules reference](docs/7-rules-reference.md) | The `vegetation` and `vegetation_indicators` rules, generated from the plugin's own description. |
