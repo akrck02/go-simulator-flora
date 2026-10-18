@@ -2,8 +2,8 @@
 
 <h2 id="the-folders-it-needs">The folders it needs</h2>
 
-<p>The plugin is developed next to the projects it uses: <code>go.mod</code> replaces go-simulator, go-renderer
-and go-scene-builder with the folders beside this one, and the example starts the terrain and
+<p>The plugin is developed next to the projects it uses: <code>go.mod</code> replaces Go Simulator, Go Renderer
+and Go Scene Builder with the folders beside this one, and the example starts the terrain and
 climate plugins from theirs. Clone them side by side:</p>
 <pre><code>go-renderer/
 go-scene-builder/
@@ -50,7 +50,7 @@ reads them:</p>
 </code></pre>
 
 <p>The whole species list and every setting are in <a href="./writing-a-scenario">writing a scenario</a>; the rules
-file&rsquo;s own keys are in go-simulator&rsquo;s
+file&rsquo;s own keys are in Go Simulator&rsquo;s
 <a href="https://github.com/akrck02/go-simulator/blob/main/docs/4-guides/1-rules-files.md" target="_blank">rules file reference</a>.</p>
 
 <h2 id="what-it-writes">What it writes</h2>
@@ -104,7 +104,7 @@ file&rsquo;s own keys are in go-simulator&rsquo;s
 go <span class="nb">test</span> ./...
 </code></pre>
 
-<p>The tests run the plugin inside a go-simulator host on synthetic landscapes and check what must
+<p>The tests run the plugin inside a Go Simulator host on synthetic landscapes and check what must
 hold anywhere: every species within its habitat, pioneers followed by shade-tolerant trees,
 disturbances keeping pioneers, anchored plants staying (and small crowns covering their share of a
 cell), managed land keeping forms out, soft habitat edges, and the same seed giving the same

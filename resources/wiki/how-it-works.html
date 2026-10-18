@@ -1,14 +1,14 @@
 <h1 id="how-it-works">🔍 How it works</h1>
 
-<h2 id="how-the-plugin-fits-go-simulator">How the plugin fits go-simulator</h2>
+<h2 id="how-the-plugin-fits-go-simulator">How the plugin fits Go Simulator</h2>
 
 <p align="center">
-  <img alt="The rules file and the terrain and climate plugins feed go-simulator, the host; every year the host sends the flora plugin a step over standard input and output, and the plugin answers with the vegetation, tree_cover, shrub_cover and herb_cover fields and a vegetation_indicators event" src="./images/how-it-works.svg" width="880">
+  <img alt="The rules file and the terrain and climate plugins feed Go Simulator, the host; every year the host sends the flora plugin a step over standard input and output, and the plugin answers with the vegetation, tree_cover, shrub_cover and herb_cover fields and a vegetation_indicators event" src="./images/how-it-works.svg" width="880">
 </p>
 
-<p>go-simulator is the host. It keeps the world (its fields, events and entities) and moves the clock.
+<p>Go Simulator is the host. It keeps the world (its fields, events and entities) and moves the clock.
 The flora plugin is a separate program the host starts (<code>main.go</code> serves it over standard input and
-output, go-simulator&rsquo;s <a href="https://github.com/akrck02/go-simulator/blob/main/docs/5-reference/2-protocol.md" target="_blank">protocol</a>).</p>
+output, Go Simulator&rsquo;s <a href="https://github.com/akrck02/go-simulator/blob/main/docs/5-reference/2-protocol.md" target="_blank">protocol</a>).</p>
 
 <ul>
 <li>At the start the plugin <strong>describes</strong> itself: its two rules, their parameters, what each one
@@ -22,8 +22,8 @@ landscape.</li>
 </ul>
 
 <p>A plugin never touches the renderer: it reads its copy of the world and answers with changes
-(go-simulator&rsquo;s <a href="https://github.com/akrck02/go-simulator/blob/main/docs/4-guides/4-writing-plugins.md" target="_blank">writing plugins</a>).
-Fields use physical units and shapes world units, as go-simulator&rsquo;s
+(Go Simulator&rsquo;s <a href="https://github.com/akrck02/go-simulator/blob/main/docs/4-guides/4-writing-plugins.md" target="_blank">writing plugins</a>).
+Fields use physical units and shapes world units, as Go Simulator&rsquo;s
 <a href="https://github.com/akrck02/go-simulator/blob/main/docs/5-reference/1-vocabulary-and-conditions.md" target="_blank">vocabulary</a> lists. The
 plugin reads what the terrain and climate plugins publish from the world instead of loading it
 again, so they must come before it in the rules file.</p>
@@ -100,7 +100,7 @@ published again every <code>publish_every</code> years. The <a href="./the-model
 <h2 id="how-the-pictures-were-made">How the pictures were made</h2>
 
 <p>The maps and charts in these pages were drawn from the plugin&rsquo;s own answers. A small throwaway
-program, kept outside the repository, ran the real plugin in a go-simulator host and read the
+program, kept outside the repository, ran the real plugin in a Go Simulator host and read the
 fields it published after every year:</p>
 
 <ul>

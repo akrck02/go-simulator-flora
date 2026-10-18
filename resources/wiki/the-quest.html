@@ -39,7 +39,7 @@ snapshot, renamed), and <code>empty.geojson</code>, a map with nothing on it:</p
 <h3 id="looking-at-the-vegetation">Looking at the vegetation</h3>
 
 <p>The plugin publishes a field <code>vegetation</code>: for every cell, the species that marks it most (or −1,
-bare ground). <code>layer/main.go</code> turns a snapshot of it into a layer go-scene-builder can colour and
+bare ground). <code>layer/main.go</code> turns a snapshot of it into a layer Go Scene Builder can colour and
 sow trees on:</p>
 <pre><code class="language-go"><span class="c1">// Command layer turns a snapshot of the vegetation field into a layer go-scene-builder colours and</span>
 <span class="c1">// sows: the species&#39; names, from the run&#39;s events, become the layer&#39;s labels, and bare ground</span>
@@ -123,7 +123,7 @@ sow trees on:</p>
 <span class="p">}</span>
 </code></pre>
 
-<p><code>models.yaml</code>, the trees (go-scene-builder&rsquo;s <a href="https://github.com/akrck02/go-scene-builder/blob/master/docs/6-decoration.md#models" target="_blank">models</a>):</p>
+<p><code>models.yaml</code>, the trees (Go Scene Builder&rsquo;s <a href="https://github.com/akrck02/go-scene-builder/blob/master/docs/6-decoration.md#models" target="_blank">models</a>):</p>
 <pre><code class="language-yaml"><span class="nt">models</span><span class="p">:</span>
   <span class="nt">fir</span><span class="p">:</span>
     <span class="nt">variants</span><span class="p">:</span> <span class="m">3</span>
