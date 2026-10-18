@@ -40,7 +40,7 @@ In every land cell, every species has:
 ## Habitat
 
 A species' habitat is an envelope over the facts of a cell (bioclimatic envelope models, Busby
-1991), written like go-simulator's [conditions](https://github.com/akrck02/go-simulator/blob/main/docs/5-reference/1-vocabulary-and-conditions.md#conditions):
+1991), written like Go Simulator's [conditions](https://github.com/akrck02/go-simulator/blob/main/docs/5-reference/1-vocabulary-and-conditions.md#conditions):
 
 ```yaml
 habitat:
@@ -221,7 +221,7 @@ second a year.
 
 - Plants do not react yet to other plugins' entities: a growing city does not clear the forest,
   and abandoned fields do not grow back.
-- The viewer does not draw fields yet; go-scene-builder can sow the vegetation from the
+- The viewer does not draw fields yet; Go Scene Builder can sow the vegetation from the
   `vegetation` field as a layer, as it does with biomes.
 - Seasons (flowering, leaves) belong to the climate's `seasons` rule.
 
